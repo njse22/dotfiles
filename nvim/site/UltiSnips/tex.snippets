@@ -1,0 +1,110 @@
+snippet tem "Basic template" b
+\documentclass{report}
+\usepackage[a4paper,
+	top=3cm,
+	bottom=3cm,
+	outer=3cm,
+	inner=3cm,
+	heightrounded]{geometry}
+
+\renewcommand\thesection{\arabic{section}}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      INKSACPE FIGURE SUPPORT                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{import}
+\usepackage{xifthen}
+\pdfminorversion=7
+\usepackage{pdfpages}
+\usepackage{transparent}
+
+\newcommand{\incfig}[1]{%
+	\def\svgwidth{\columnwidth}
+	\import{./figures/}{#1.pdf_tex}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               HEADER                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{titlesec}
+\titlespacing*{\subsection}{\parindent}{.25in}{\wordsep}
+\rhead{Nicolá J. Salazar E.}
+\renewcommand{\sectionmark}[1]{\markright{$\S$\thesection\ #1}}
+\lhead{\nouppercase{\rightmark}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                              FOONOTES                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{scrextend}
+\deffootnote[1em]{0in}{1em}{\textsuperscript{\thefootnotemark\ }}
+\setlength{\footnotesep}{0.125in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                TITLE                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{${1:${VISUAL:Example Template}}}
+\author{Nicolás J. Salazar E.}
+\date{\today}
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                              DOCUMENT                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$2
+
+
+\end{document}
+endsnippet
+
+snippet IEEEfigure "Double Column figure for IEEE template" b
+\begin{figure*}[${2:htpb}]
+  \normalsize
+	\centering
+	\includegraphics[width=${3:0.8}\linewidth]{${4:name.ext}}
+	\caption{${4/(\w+)\.\w+/\u$1/}$0}%
+	\label{fig:${4/(\w+)\.\w+/$1/}}
+\end{figure*}
+endsnippet
+
+snippet IEEEequ "Double Column equation for IEEE template" b
+\begin{figure*}[${1:htpb}]
+  \normalsize
+	\centering
+  \begin{equation}
+	\label{equ:${2/(\w+)\.\w+/$1/}}
+  \end{equation}
+\end{figure*}
+endsnippet
+
+snippet \ink "figure" bA
+\begin{figure}[ht]
+    \centering
+    \incfig{${1:${VISUAL:figure name}}}
+    \caption{${2:${VISUAL:figure name}}}
+    \label{fig:${3:${2/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
+\end{figure}
+endsnippet
+
+snippet <= "leq" bA
+\le
+endsnippet
+
+snippet >= "geq" bA
+\ge
+endsnippet
+
+snippet == "equals" bA
+&= $1 \\\\
+endsnippet
+
+snippet != "equals" bA
+\neq
+endsnippet
