@@ -10,7 +10,7 @@ set nowritebackup
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
-set updatetime=300
+set updatetime=200
 
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
@@ -162,18 +162,27 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>l
 
-" call coc#add_extension('coc-clangd', 'coc-cmake', 'coc-css', 'coc-html', 'coc-java',
-"       \'coc-json', 'coc-snippets', 'coc-solargraph', 'coc-tabnine', 'coc-tsserver', 'coc-yaml')
-"       \ 'coc-clangd',
-let g:coc_global_extensions = [
-      \ 'coc-cmake',
-      \ 'coc-css',
-      \ 'coc-html',
-      \ 'coc-java',
-      \ 'coc-json',
-      \ 'coc-snippets',
-      \ 'coc-solargraph',
-      \ 'coc-tabnine',
-      \ 'coc-tsserver',
-      \ 'coc-yaml',
+let g:markdown_fenced_languages = [
+      \ 'vim',
+      \ 'help'
       \]
+
+let g:coc_snippet_next = '<TAB>'
+let g:coc_snippet_prev = '<S-TAB>'
+
+let g:coc_global_extensions = [
+      \"coc-clangd",
+      \"coc-cmake",
+      \"coc-css",
+      \"coc-html",
+      \"coc-java",
+      \"coc-json",
+      \"coc-snippets",
+      \"coc-solargraph",
+      \"coc-tabnine",
+      \"coc-tsserver",
+      \"coc-yaml",
+      \"coc-vimlsp",
+      \]
+" \"coc-pyright",
+" \"coc-jedi",

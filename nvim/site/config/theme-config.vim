@@ -4,7 +4,6 @@
 if has('termguicolors')
     set termguicolors
 endif
-set background=dark
 
 " ============
 " FOREST-NIGHT
@@ -25,7 +24,7 @@ endif
 " ====
 " CODE
 " ====
-" let g:codedark_conservative = 1
+let g:codedark_conservative = 1
 
 " ========
 " MATERIAL
@@ -50,13 +49,17 @@ let g:colorsscheme_array = [
             \'spaceduck',
             \'codedark',
             \'material',
-            \'ayu'
+            \'ayu',
+            \'lighthaus'
             \]
+
+
 
 let g:ayu_color_array = ["light", "migrate", "dark"]
 let ayucolor =  g:ayu_color_array[2]
 
 execute "colorscheme " . g:colorsscheme_array[4]
+set background=dark
 
 " airline
 let g:airline#extensions#tabline#enabled = 1

@@ -27,6 +27,7 @@ set noshowmode								 " quita el texto del modo actual
 set colorcolumn=85
 set updatetime=100
 set path+=$PWD/**
+set tags+=~/.local/share/nvim/site/tags;
 set tags+=tags;
 set nocompatible
 filetype on										 " Enable the 'file type' in files... super description
@@ -117,7 +118,7 @@ noremap <Leader>ca :Bda<CR>
 " nnoremap <C-p> :e<space>
 " nnoremap <Leader>ft :tabedit<space>
 " nnoremap <Leader>fv :vsplit<space>
-" nnoremap <Leader>fh :split<space>
+" nnoremap <Leader>fs :split<space>
 " nnoremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " simple math
@@ -126,6 +127,9 @@ nnoremap \|m 0yt=A<C-r>=<C-r>"<CR>
 " ===================
 " Insert Mode Mapping
 " ===================
+
+" center cursor when the ESC key is pushed
+inoremap <Esc> <Esc>zz
 
 " uppercase word
 inoremap <c-u> <esc>viwUi
@@ -161,6 +165,17 @@ vmap > >gv
 " Move visual selection
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
+
+" ====================
+" Command Mode Mapping
+" ====================
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
+cnoremap <C-d> <Del>
+cnoremap <A-l> <Right>
+cnoremap <A-h> <Left>
 
 let g:netrw_banner       = 0
 let g:netrw_liststyle    = 3
@@ -215,8 +230,8 @@ function! s:SpellToggle()
 endfunction
 
 " custom find
-nnoremap <Leader>f :call <SID>GrepSearchToggle(mode())<CR>
-vnoremap <Leader>f :<c-u>call <SID>GrepSearchToggle(visualmode())<cr>
+nnoremap <Leader>s :call <SID>GrepSearchToggle(mode())<CR>
+vnoremap <Leader>s :<c-u>call <SID>GrepSearchToggle(visualmode())<cr>
 
 let g:grep_search_open = 0
 
@@ -292,8 +307,8 @@ function! Edit(...)
 	let l:sep = ''
 	if len(a:000) > 0
 		let l:sep = '-'
-	endif 
-	let l:fname = expand(g:notes_dir) .  strftime("%F-%H%M") . 
+	endif
+	let l:fname = expand(g:notes_dir) .  strftime("%F-%H%M") .
               \ l:sep . join(a:000, '-') . g:notes_extention
 	execute "e " . l:fname
 endfunction
@@ -348,5 +363,7 @@ augroup vimrc_python
       \ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
   autocmd FileType python
       \ :iabbrev ppp print("");<left><left><left>
+  autocmd FileType python map <buffer> <F5> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
+  autocmd FileType python imap <buffer> <F5> <esc>:w<ChhR>:exec '!python3' shellescape(@%, 1)<CR>
 augroup END
 let python_highlight_all = 1

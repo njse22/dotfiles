@@ -3,9 +3,17 @@
 " ============
 
 " Install vim-plug if not found
-if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+if has('nvim')
+  if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+    silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  endif
+else
+  if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs 
+          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  endif
 endif
 
 " Run PlugInstall if there are missing plugins
@@ -13,7 +21,14 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   \| PlugInstall --sync | source $MYVIMRC
 \| endif
 
-call plug#begin('~/.local/share/nvim/site/plugged')
+let s:config_editor_path = ''
+if has('nvim')
+  let s:config_editor_path = '~/.local/share/nvim/site/plugged'
+else
+  let s:config_editor_path = '~/.vim/plugged'
+endif
+
+call plug#begin(s:config_editor_path)
 
 " Themes
 Plug 'sainnhe/forest-night'
@@ -23,6 +38,7 @@ Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 Plug 'ayu-theme/ayu-vim'
 Plug 'whatyouhide/vim-gotham'
 Plug 'lifepillar/vim-solarized8' 
+Plug 'lighthaus-theme/vim-lighthaus'
 
 " IDE
 Plug 'scrooloose/nerdtree'         " for navigate between files
@@ -42,20 +58,14 @@ Plug 'xolox/vim-misc'              " this is nessesary for vim-session
 Plug 'xolox/vim-session'           " this is for managemend sessions
 Plug 'skywind3000/asyncrun.vim'    " for asyncronus terminal run
 Plug 'tyru/open-browser.vim'       " for search in internet
-Plug 'voldikss/vim-floaterm'       " pretty floting terminal for neovim
 Plug 'junegunn/vim-easy-align'     " to aling code
 Plug 'simnalamburt/vim-mundo'      " undo with esteroids
 Plug 'Yggdroot/indentLine'
 Plug 'vim-syntastic/syntastic'
 Plug 'sheerun/vim-polyglot'
-" Plug 'ervandew/supertab'
-" Plug 'ycm-core/YouCompleteMe' , { 'do': './install.py --all' }
-" Plug 'ycm-core/lsp-examples', {'do': './install.py --enable-ruby --enable-bash --enable-kotlin'}
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'puremourning/vimspector', {'do': 
       \ 'python3 install_gadget.py --enable-vscode-cpptools --enable-python'}
-
-" TODO: Stop make chnages here !! <26-01-21, Nicolas J. Salazar E.> "
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 if isdirectory('/usr/local/opt/fzf')
   Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
@@ -64,33 +74,27 @@ else
   Plug 'junegunn/fzf.vim'
 endif
 
-" Python
-" Plug 'davidhalter/jedi-vim'
+if has('nvim')
+  Plug 'voldikss/vim-floaterm'       " pretty floting terminal for neovim
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+endif
+
+Plug 'skywind3000/vim-rt-format', { 'do': 'pip3 install autopep8' }
 
 " C++
-" Plug 'vim-scripts/OmniCppComplete'
-" Plug 'xavierd/clang_complete'
 Plug 'vim-scripts/a.vim'
 Plug 'bfrg/vim-cpp-modern'
-Plug 'cdelledonne/vim-cmake'   " cmake
+
+" cmake 
+Plug 'cdelledonne/vim-cmake'
 
 " HTML
 Plug 'gko/vim-coloresque'
 Plug 'mattn/emmet-vim'
-" Plug 'hail2u/vim-css3-syntax'
 Plug 'tpope/vim-haml'
-
-" yaml
-" Plug 'vim-scripts/yaml.vim'
-
-" javascript
-" Plug 'jelera/vim-javascript-syntax'
-" Plug 'leafgarland/typescript-vim'
-" Plug 'HerringtonDarkholme/yats.vim'
 
 " java
 Plug 'artur-shaik/vim-javacomplete2'
-" Plug 'vim-scripts/javaRun'
 
 " GNU Radio
 Plug 'njse22/gr-vim'
@@ -103,6 +107,10 @@ Plug 'tpope/vim-projectionist'
 Plug 'thoughtbot/vim-rspec'
 Plug 'ecomba/vim-ruby-refactoring', {'tag': 'main'}
 
+" IaC
+" Ansible
+Plug 'pearofducks/ansible-vim', { 'do': './UltiSnips/generate.sh' }
+
 " LaTex
 Plug 'lervag/vimtex'
 
@@ -112,18 +120,7 @@ call plug#end()
 " PLUGING MAPING AND CONFIGURATION
 " =================================
 
-" ==========
-"  JEDI-VIM
-" ==========
-let g:jedi#popup_on_dot             = 0
-let g:jedi#goto_assignments_command = "<Leader>ga"
-let g:jedi#goto_definitions_command = "<Leader>gd"
-let g:jedi#documentation_command    = "K"
-let g:jedi#usages_command           = "<Leader>n"
-let g:jedi#rename_command           = "<Leader>r"
-let g:jedi#show_call_signatures     = "0"
-let g:jedi#completions_command      = "<C-Space>"
-let g:jedi#smart_auto_mappings      = 0
+let g:rtf_on_insert_leave = 1
 
 " path to directory where library can be found
 let g:clang_library_path='/usr/lib/llvm-10/lib'
@@ -133,20 +130,6 @@ let g:clang_library_path='/usr/lib/llvm-10/lib'
 " =======
 set tags+=~/.vim/tags/cpp
 command! MkTags :!ctags -R --c++-kinds=+pl --fields=+iaS --extra=+q .
-let OmniCpp_GlobalScopeSearch   = 1
-let OmniCpp_NamespaceSearch     = 2 " 2: included 1: this file only
-let OmniCpp_ShowAccess          = 1
-let OmniCpp_DisplayMode         = 1
-let OmniCpp_ShowScopeInAbbr     = 0
-let OmniCpp_SelectFirstItem     = 0
-let OmniCpp_ShowPrototypeInAbbr = 1 " show function parameters
-let OmniCpp_MayCompleteDot      = 1 " autocomplete after .
-let OmniCpp_MayCompleteArrow    = 0 " autocomplete after ->
-let OmniCpp_MayCompleteScope    = 0 " autocomplete after ::
-let OmniCpp_DefaultNamespaces   = ["std", "_GLIBCXX_STD"]
-" automatically open and close the popup menu / preview window
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-set completeopt=menuone,menu,longest,preview
 
 " change between headers and definitions (.c to .h and biseversa)
 nnoremap <Leader>< :A<CR>
@@ -214,6 +197,18 @@ let g:easy_align_delimiters = {
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
 
+" =========
+" PYDICTION
+" =========
+let g:pydiction_location = '~/.local/share/nvim/site/plugged/pydiction/complete-dict'
+let g:pydiction_menu_height = 3
+
+" =========
+" RF-FORMAT
+" =========
+let g:rtf_ctrl_enter = 0
+let g:rtf_on_insert_leave = 1
+
 " ===
 " ALE
 " ===
@@ -224,6 +219,11 @@ let g:ale_linters = {
             \ 'python': ['autopep8'],
             \ '*': ['remove_trailing_lines', 'trim_whitespace'],
             \}
+
+let g:ale_fixers = {
+      \    'python': ['yapf'],
+      \}
+let g:ale_fix_on_save = 1
 
 let g:ale_python_pylint_executable = 'pylint3'
 call extend(g:ale_linters, {
@@ -436,3 +436,8 @@ augroup vimrc_java
 augroup END
 
 let g:JavaComplete_EnableDefaultMappings = 1
+
+" ========================
+" IFRAESTRUCTURE AS A CODE
+" ========================
+autocmd BufRead,BufNewFile */playbooks/*.yml set filetype=yaml.ansible
