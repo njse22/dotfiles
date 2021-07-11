@@ -72,8 +72,8 @@ sudo apt-get -y install clang cmake curl cppunit libcppunit-dev \
 	libsdl1.2-dev libgsl-dev libqwt-qt5-dev libqt5opengl5-dev  \
 	liblog4cpp5-dev libzmq3-dev gir1.2-gtk-3.0 \
 	libcodec2-dev libgsm1-dev libiio-dev libad9361-dev \
-	libsoapysdr-dev soapysdr-tools libusb-1.0-0-dev \
-	build-essential vim ctags vim-scripts neovim flameshot chromium-browser \
+	libsoapysdr-dev soapysdr-tools libusb-1.0-0-dev  ctags\
+	build-essential vim universal-ctags vim-scripts neovim flameshot chromium-browser \
 	apt-transport-https neofetch zsh ffmpeg v4l2loopback-dkms conky
 
 ## Python depencies 
@@ -81,7 +81,7 @@ sudo apt-get -y install python3-numpy python3-setuptools python3-ruamel.yaml \
 	python3-requests python3-docutils python3-zmq python3-scipy python3-gi \
 	python3-gi-cairo python3-yaml python3-click python3-click-plugins \
 	python3-pyqt5 python3-mako python3-sphinx python3-lxml python3-matplotlib \
-	python3-ipython python3-pip python3-neovim 
+	python3-ipython python3-dev python3-pip python3-neovim python3-venv
 
 ## Jupyter 
 sudo apt-get -y install jupyter jupyter-qtconsole jupyter-notebook
@@ -89,20 +89,51 @@ sudo apt-get -y install jupyter jupyter-qtconsole jupyter-notebook
 ## pip packages
 pip install --upgrade pip
 pip install bpython
-pip install tensorflow
+pip install tensorflow==2.2
+
+echo "==> Install GNU Radio and SDR Tools <=="
+cd
+# CPU Freq
+sudo apt-get -y install cpufrequtils
+sudo systemctl stop ondemand
+sudo systemctl disable ondemand
+echo "GOVERNOR=\"performance\"" | sudo tee -a /etc/default/cpufrequtils
+
+# Paths 
+cd
+echo 'export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib' >> ~/.profile
+echo 'export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3/dist-packages' >> ~/.profile
+echo 'export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3/site-packages' >> ~/.zshrc
+echo 'export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3.8/dist-packages' >> ~/.profile
+echo 'export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3.8/site-packages' >> ~/.zshrc
+
+sudo apt-get -y install multimon-ng sox liborc-dev swig3.0
+sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
+sudo add-apt-repository -y ppa:mormj/gnuradio-oot3
+sudo apt-get update
+sudo apt-get -y install gr-fcdproplus gr-fosphor gr-iqbal gr-limesdr gr-osmosdr
+sudo apt-get -y install gqrx-sdr inspectrum
+
+sudo usermod -aG usrp $USER
+sudo apt-get -y install clinfo mesa-utils
+sudo usermod -aG video $USER
+sudo usermod -aG dialout $USER 
+sudo usermod -aG lpadmin $USER 
+
+sudo apt-get -y install intel-opencl-icd lsb-core
+sudo /usr/lib/uhd/utils/uhd_images_downloader.py
 
 echo "==> Install Snap"
 sudo apt-get -y install snapd
-sudo snap install urh
-sudo snap install microk8s --classic
+# sudo snap install microk8s --classic
 
 echo "==> Install Flatpack"
 sudo apt-get -y install flatpak
 sudo apt install plasma-discover-flatpak-backend
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 sudo ldconfig
-flatpak install flathub org.telegram.desktop
-flatpak install flathub us.zoom.Zoom
+# flatpak install flathub org.telegram.desktop
+# flatpak install flathub us.zoom.Zoom
 
 echo "==> Install Personal Software <=="
 echo "==> ppa repositories"
@@ -174,38 +205,6 @@ sudo apt install ulauncher_5.11.0_all.deb
 # virtualbox
 wget https://download.virtualbox.org/virtualbox/6.1.22/virtualbox-6.1_6.1.22-144080~Ubuntu~eoan_amd64.deb
 sudo dpkg -i virtualbox-6.1_6.1.22-144080~Ubuntu~eoan_amd64.deb
-
-echo "==> Install GNU Radio and SDR Tools <=="
-cd
-# CPU Freq
-sudo apt-get -y install cpufrequtils
-sudo systemctl stop ondemand
-sudo systemctl disable ondemand
-echo "GOVERNOR=\"performance\"" | sudo tee -a /etc/default/cpufrequtils
-
-# Paths 
-cd
-echo 'export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib' >> ~/.profile
-echo 'export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3/dist-packages' >> ~/.profile
-echo 'export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3/site-packages' >> ~/.zshrc
-echo 'export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3.8/dist-packages' >> ~/.profile
-echo 'export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3.8/site-packages' >> ~/.zshrc
-
-sudo apt-get -y install multimon-ng sox liborc-dev swig3.0
-sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
-sudo add-apt-repository -y ppa:mormj/gnuradio-oot3
-sudo apt-get update
-sudo apt-get -y install gr-fcdproplus gr-fosphor gr-iqbal gr-limesdr gr-osmosdr
-sudo apt-get -y install gqrx-sdr inspectrum
-
-sudo usermod -aG usrp $USER
-sudo apt-get -y install clinfo mesa-utils
-sudo usermod -aG video $USER
-sudo usermod -aG dialout $USER 
-sudo usermod -aG lpadmin $USER 
-
-sudo apt-get -y install intel-opencl-icd lsb-core
-sudo /usr/lib/uhd/utils/uhd_images_downloader.py
 
 echo "==> Install and Configure OhMyZsh"
 cd 
