@@ -1,10 +1,10 @@
 " ==============
 " GENERAL CONFIG
 " ==============
-set number										 " for enable the numbers in the editor
-set numberwidth=4							 " for change the weigh of the numbers
-set showcmd										 " show the command that you typing
-set encoding=utf-8						 " chance the codification to UTF-8
+set number		       " for enable the numbers in the editor
+set numberwidth=4	       " for change the weigh of the numbers
+set showcmd		       " show the command that you typing
+set encoding=utf-8	       " chance the codification to UTF-8
 set fileencodings=utf-8
 set ttyfast
 set backspace=indent,eol,start " Fix backspace indent
@@ -23,17 +23,17 @@ set smartcase
 set autoindent                 " Enable auto indenting
 set modeline                   " Make sure vim checks for 'set commands' in opened files
 set modelines=3
-set noshowmode								 " quita el texto del modo actual
+set noshowmode		       " quita el texto del modo actual
 set colorcolumn=85
 set updatetime=100
 set path+=$PWD/**
 set tags+=~/.local/share/nvim/site/tags;
 set tags+=tags;
 set nocompatible
-filetype on										 " Enable the 'file type' in files... super description
-filetype indent on						 " Enable indenting for files
-filetype plugin indent on			 " Enable file type based indentation
-syntax enable									 " Enable syntax highlighting
+filetype on			" Enable the 'file type' in files... super description
+filetype indent on		" Enable indenting for files
+filetype plugin indent on	" Enable file type based indentation
+syntax enable			" Enable syntax highlighting
 highlight CursorLine ctermbg=grey
 
 if exists('$SHELL')
