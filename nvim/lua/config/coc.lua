@@ -190,4 +190,5 @@ vim.g.coc_global_extensions = {
   'coc-vimlsp',
   '@yaegassy/coc-ansible',
   'coc-pyright',
+  'coc-go',
 }

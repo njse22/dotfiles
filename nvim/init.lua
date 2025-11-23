@@ -77,6 +77,17 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'L3MON4D3/LuaSnip'
 
+-- Springboot 
+Plug "javiorfo/nvim-popcorn"
+Plug "javiorfo/nvim-spinetta"
+Plug "hrsh7th/nvim-cmp"
+Plug 'javiorfo/nvim-springtime'
+
+-- gradle 
+Plug "nvim-lua/plenary.nvim"
+Plug "MunifTanjim/nui.nvim"
+Plug "oclay1st/gradle.nvim"
+
 vim.call('plug#end')
 
 vim.g.mapleader = ','

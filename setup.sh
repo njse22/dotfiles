@@ -50,18 +50,18 @@ echo "==> Upgrading Packages"
 sudo apt-get -y upgrade
 
 echo "==> Creating User Disrs"
-# mkdir -p ~/Software
-# mkdir -p ~/Workspace
-# mkdir -p ~/ISOs
-# mkdir -p ~/Git
+mkdir -p $HOME/Software
+mkdir -p $HOME/Workspace
+mkdir -p $HOME/ISOs
+mkdir -p $HOME/Git
 # mkdir -p ~/Software/gnuradio38
 
 echo "==> Copy Files"
-#cp ./zsh/zshrc ~/.zshrc
-#cp ./tmux/tmux.conf ~/.tmux.conf
-#cp ./nvim/init.vim ~/.config/nvim/init.vim
-#cp ./nvim/coc-settings.json ~/.config/nvim/coc-settings.json
-#cp -r ./nvim/site/* ~/.local/share/nvim/site
+cp ./zsh/zshrc $HOME/.zshrc
+cp ./tmux/tmux.conf $HOME/.tmux.conf
+cp ./nvim/init.lua $HOME/.config/nvim/init.lua
+cp ./nvim/coc-settings.json $HOME/.config/nvim/coc-settings.json
+cp -r ./nvim/lua $HOME/.config/nvim/
 
 echo "==> Install commond tools"
 sudo apt-get -y install clang cmake curl cppunit libcppunit-dev \

@@ -54,5 +54,11 @@
 //  "ansible.ansibleLint.path": "ansible-lint",
   "ansible.ansibleLint.arguments": "--profile=production",
   "java.import.gradle.java.home": "/usr/lib/jvm/java-17-openjdk-amd64",
-  "snippets.ultisnips.pythonPrompt": false
+  "snippets.ultisnips.pythonPrompt": false,
+  "java.imports.gradle.wrapper.checksums": [
+    {
+      "sha256": "76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3",
+      "allowed": false
+    }
+  ]
 }
