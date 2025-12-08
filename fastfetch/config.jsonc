@@ -1,0 +1,153 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "padding": {
+      "top": 5,
+      "left": 1,
+      "right": 1
+    },
+     "type": "raw",
+     "source": "/home/i2t/.config/fastfetch/resources/ubuntu_5.bin",
+     "width": 30,
+     "height": 15
+  },
+  "display": {
+      "separator": "\uf432   ",
+      "bar": {
+          "charElapsed": "󰹞",
+          "charTotal": "\udb81\uddb0",
+          "width": 10
+      },
+      "percent": {
+          "type": 3
+      },
+      "constants": [
+            "──────────────────────────────────────────────────────────────────────────────────",
+            "│\u001b[82C│\u001b[82D"
+
+      ]  
+  },
+
+  "modules": [
+    // Title
+    {
+      "type": "title",
+      "format": "{#31}╭────────────────────────────────────── {#}{user-name-colored} 💻 {#31} ───────────────────────────────────╮"
+    },
+    // System Information
+    {
+      "type": "custom",
+      "format": "{#31}{$2}{#1} {#}System Information"
+    },
+    {
+      "type": "os",
+      "key": "{$2}{#separator} {#keys}󰍹 OS          "
+    },
+    {
+      "type": "kernel",
+      "key": "{$2}{#separator} {#keys}󰒋 Kernel      "
+    },
+    {
+      "type": "uptime",
+      "key": "{$2}{#separator} {#keys}󰅐 Uptime      "
+    },
+    {
+      "type": "packages",
+      "key": "{$2}{#separator} {#keys}󰏖 Packages    ",
+      "format": "{all}"
+    },
+    {
+      "type": "datetime",
+      "key": "{$2}{#separator} {#keys}󰃭 Date        ",
+      "format": "{1}-{4}-{11}"
+    },
+    {
+      "type": "custom",
+      "format": "{#31}{$2}{#1}"
+    },
+    // Hardware Information
+    {
+      "type": "custom",
+      "format": "{#31}{$2}{#31} {#}Hardware Information"
+    },
+    {
+      "type": "cpu",
+      "key": "{#31}{$2}{#separator} {#keys}󰻠 CPU         "
+    },
+    {
+      "type": "gpu",
+      "key": "{#31}{$2}{#separator} {#keys}󰢮 GPU         "
+    },
+    {
+      "type": "battery",
+      "key": "{#31}{$2}{#separator} {#keys}󰁹 Battery     "
+    },
+    {
+      "type": "memory",
+      "key": "{#31}{$2}{#separator} {#keys}󰍛 Memory      "
+    },
+    {
+      "type": "disk",
+      "key": "{#31}{$2}{#separator} {#keys}󰋊 Disk (/)    ",
+      "folders": "/:"
+    },
+    {
+      "type": "disk",
+      "key": "{#31}{$2}{#separator} {#keys}󰋊 Disk (/home)",
+      "folders": "/home:"
+    },
+    {
+      "type": "custom",
+      "format": "{#31}{$2} \t \t "
+    },
+
+    // Network 
+    {
+      "type": "custom",
+      "format": "{#31}{$2} {#}Network Information"
+    },
+
+    {
+	"type": "localip",
+	"key": "{$2}{#separator} {#keys}󰩠 Private IP  ",
+	"compact": true
+        // "format": "{ipv4} ({ifname})"
+    },
+      {
+        // localip IPv6
+        "type": "localip",
+        "key": "{$2}{#separator} {#keys}󰩠 Local IPv6  ",
+        "showPrefixLen": true,
+        "showIpv4": false,
+        "showIpv6": true,
+        "showMtu": true,
+        "format": "{$2}{$3}{ifname}: {ipv6}  {#2}[MTU:{mtu}]"
+      },
+    {
+	"type": "publicip",
+	"key": "{$2}{#separator} {#keys}󰀂 Public IP   ",
+	"timeout": 1000
+    },
+    {
+        "type": "wifi",
+	"key": "{$2}{#separator} {#keys}󰖩 WiFi SSID   "
+    },
+
+    // Colors
+    {
+        "format": "{#1}{#keys}├{$1}┤",
+        "type": "custom"
+    },
+    {
+        "key": "{$2}{#separator}{#keys}   colors     ",
+        "type": "colors",
+        "symbol": "circle"
+    },
+
+    // Footer
+    {
+      "type": "custom",
+      "format": "{#31}╰{$1}╯" // ╯
+    }
+  ]
+}
