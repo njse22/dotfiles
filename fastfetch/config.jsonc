@@ -6,16 +6,16 @@
       "left": 1,
       "right": 1
     },
-     "type": "raw",
-     "source": "/home/i2t/.config/fastfetch/resources/ubuntu_5.bin",
-     "width": 30,
-     "height": 15
+     "type": "file",
+     "source": "${HOME}/.config/fastfetch/resources/pentagram.txt",
+     "width": 6,
+     "height": 6
   },
   "display": {
       "separator": "\uf432   ",
       "bar": {
-          "charElapsed": "󰹞",
-          "charTotal": "\udb81\uddb0",
+          "elapsed": "󰹞",
+          "total": "\udb81\uddb0",
           "width": 10
       },
       "percent": {

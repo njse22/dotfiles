@@ -3,95 +3,60 @@
 --   /  |/ / _ \/ __ \ | / / / __ `__ \
 --  / /|  /  __/ /_/ / |/ / / / / / / /
 -- /_/ |_/\___/\____/|___/_/_/ /_/ /_/
+-------------------------------------------------------
 
-----------------------------
---  Configurations files  --
-----------------------------
+-- ====================================================
+--  GENERAL CONFIGURATION 
+-- ====================================================
+vim.g.mapleader = ','
 
 require("config.general")
 
-local Plug = vim.fn['plug#']
+-- ====================================================
+-- P4 SYNTAX CONFIGURATION
+-- ====================================================
+vim.filetype.add({
+  extension = {
+    p4 = "p4",
+  },
+})
 
---------------------
---  Load Plugins  --
---------------------
+-- ====================================================
+--  BOOTSTRAP LAZY.NVIM
+-- ====================================================
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
 
-vim.call('plug#begin')
+-- ====================================================
+--  PLUGINS CONFIGURATION
+-- ====================================================
+require("lazy").setup({
 
--- User Interface | Themes 
-Plug 'ayu-theme/ayu-vim'
-Plug 'sainnhe/everforest'
-Plug 'pineapplegiant/spaceduck'
-Plug 'catppuccin/nvim'
-Plug "rose-pine/neovim"
+  -- UI
+  require("config.plugins.ui"),
 
-Plug 'vim-airline/vim-airline'     -- graphical interface
-Plug 'nvimdev/dashboard-nvim'
+  -- Navigation 
+  require("config.plugins.navigation"),
+  
+  -- Edition 
+  require("config.plugins.editing"),
 
--- IDE
-Plug('junegunn/fzf', { ['do'] = function()
-  vim.fn['fzf#install']()
-end })
+  -- Autocompletetion
+  require("config.plugins.completion"),
 
-Plug('preservim/nerdtree', { ['on'] = 'NERDTreeToggle' })
-Plug('ryanoasis/vim-devicons')
-Plug('neoclide/coc.nvim', { ['branch'] = 'release' })
+  -- LSP 
+  require("config.plugins.lsp"),
 
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-
-Plug 'tpope/vim-fugitive'     -- to use Git in vim
-Plug 'tpope/vim-rhubarb'      -- required by fugitive to :Gbrowse for open de file proyect in github
-Plug 'Raimondi/delimitMate'   -- autocompletion in insert mode
-Plug 'junegunn/vim-easy-align'
-
--- Telescope file finder / picker, two above it are dependencies
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-telescope/telescope-fzy-native.nvim'
-Plug 'nvim-telescope/telescope-file-browser.nvim'
-Plug 'stevearc/dressing.nvim'
-Plug 'majutsushi/tagbar'           -- a tool to navigate in code with tags
-Plug 'christoomey/vim-tmux-navigator'
-
-Plug 'krcs/vim-routeros-syntax'
--- Project management
-Plug 'nvim-telescope/telescope-project.nvim'
-
--- LaTex 
-Plug 'artisticat1/obsidian-latex-suite'
-Plug 'lervag/vimtex'
-
--- LSP 
--- Plug 'williamboman/mason.nvim'
--- Plug "williamboman/mason-lspconfig.nvim"
--- Plug 'neovim/nvim-lspconfig'
-
--- nvim cmp 
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'L3MON4D3/LuaSnip'
-
--- Springboot 
-Plug "javiorfo/nvim-popcorn"
-Plug "javiorfo/nvim-spinetta"
-Plug "hrsh7th/nvim-cmp"
-Plug 'javiorfo/nvim-springtime'
-
--- gradle 
-Plug "nvim-lua/plenary.nvim"
-Plug "MunifTanjim/nui.nvim"
-Plug "oclay1st/gradle.nvim"
-
-vim.call('plug#end')
-
-vim.g.mapleader = ','
-
-require("config.plugins")
-require("config.coc")
-
+  -- Lenguages
+  require("config.plugins.languages"),
+})

@@ -23,7 +23,6 @@ alias psf='ps -ef | fzf --height 50% --reverse --border'
 alias hyf='history | fzf --height 50% --reverse --border | sed "s/^[ ]*[0-9]*[ ]*//" | xargs -I {} zsh -c "{}"'
 alias lt='tree'
 alias cl='clear'
-alias neo='neofetch --ascii_distro kubuntu'
 alias vimrc='v ~/.config/nvim/init.lua'
 alias tmuxrc='nvim ~/.tmux.conf'
 alias zshrc="nvim ~/.zshrc"
@@ -33,6 +32,8 @@ alias killps="ps -ef | fzf | awk '{print $2}' | xargs kill"
 alias weather='curl https://wttr.in'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 alias :q='exit'
+alias :Q='exit'
+
 # clear ; for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do clear;pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done
 
 alias SEAMCAT='/usr/local/java/jre1.8.0_411/bin/java -jar ~/Software/SEAMCAT-5.5.0-OFFICIAL.jar'
@@ -44,9 +45,8 @@ alias gogh='bash -c "$(wget -qO- https://git.io/vQgMr)"'
 alias gitinspector='/home/i2t/Git/gitinspector/gitinspector.py'
 
 alias netinstall-cli='/home/i2t/ISOs/netinstall-7.18.2/netinstall-cli'
-alias bat='batcat'
 
-# DESKTOPINTEGRATION=0 $HOME/Software/marktext/marktext-x86_64.AppImage
+alias bat='batcat'
 
 function openNvim {
     if [[ $# -eq 0 ]]; then
@@ -66,34 +66,79 @@ function simona() {
 
 # CTRL-Y to copy the command into clipboard using pbcopy
 export FZF_CTRL_R_OPTS="
-  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --style full
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | xclip)+abort'
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
+
+export FZF_CTRL_T_OPTS="
+  --style full 
+  --walker-skip .git,node_modules,target
+  --preview 'batcat -n --color=always {}'
+  --bind 'ctrl-/:change-preview-window(down|hidden|)'
+  "
 
 export EDITOR="nvim"
 
 # This is the same functionality as fzf's ctrl-p, except that the file or
 # directory selected is now automatically cd'ed or opened, respectively.
 function fzf-open-file-or-dir() {
-  local cmd="command find -L . \
-    \\( -path '*/\\.*' -o -fstype 'dev' -o -fstype 'proc' \\) -prune \
-    -o -type f -print \
-    -o -type d -print \
-    -o -type l -print 2> /dev/null | sed 1d | cut -b3-"
-  local out=$(eval $cmd | fzf-tmux --exit-0)
+    zle -I 
 
-  if [ -f "$out" ]; then
-    "$EDITOR" "$out" < /dev/tty
-  elif [ -d "$out" ]; then
-    cd "$out"
-    zle reset-prompt
-  fi
+    local cmd="command find -L . \
+	\\( -path '*/\\.*' -o -fstype 'dev' -o -fstype 'proc' \\) -prune \
+	-o -type f -print \
+	-o -type d -print \
+	-o -type l -print 2> /dev/null | sed 1d | cut -b3-"
+
+      local out=$(eval $cmd | 
+	fzf  \
+	    --style full \
+	    --walker-skip .git,node_modules,target \
+	    --preview '
+		       if [ -f {} ]; then 
+			   batcat -n --color=always {}
+			elif [ -d {} ]; then
+			    tree -C {}
+			fi
+		       ' \
+	    --bind 'ctrl-/:change-preview-window(down|hidden|)' )
+
+      if [ -f "$out" ]; then
+	"$EDITOR" "$out" < /dev/tty
+      elif [ -d "$out" ]; then
+	BUFFER="cd $out"
+	CURSOR=$#BUFFER
+	zle reset-prompt
+      fi
 }
 
 zle     -N   fzf-open-file-or-dir
 bindkey '^P' fzf-open-file-or-dir
 
-bindkey -s '^h' 'gocheat\n'
+# git --help -a | grep -E '^\s+' | fzf --style full --bind 'enter:execute( echo -n {} | awk '\''{print "git " $1}'\'' )+abort'
+#
+_fzf_complete_git() {
+  _fzf_complete -- "$@" < <(
+    git --help -a | grep -E '^\s+' | awk '{print $1}'
+  )
+}
+
+function __fzf_git_helper(){
+    zle -I 
+
+    local command=$( git --help -a | grep -E '^\s+' | fzf --style full | awk '{print $1}') 
+
+    if [[ -n "$command" ]]; then 
+	BUFFER="git $command "
+    fi
+    CURSOR=$#BUFFER
+
+    zle reset-prompt
+}
+
+zle     -N   __fzf_git_helper
+bindkey '^g' __fzf_git_helper
 
 function update-bookmark(){
   echo "Copying file:"
@@ -192,208 +237,3 @@ function py-venv() {
     esac
 }
 
-#compdef classroom
-
-# zsh completion for classroom                            -*- shell-script -*-
-
-__classroom_debug()
-{
-    local file="$BASH_COMP_DEBUG_FILE"
-    if [[ -n ${file} ]]; then
-        echo "$*" >> "${file}"
-    fi
-}
-
-_classroom()
-{
-    local shellCompDirectiveError=1
-    local shellCompDirectiveNoSpace=2
-    local shellCompDirectiveNoFileComp=4
-    local shellCompDirectiveFilterFileExt=8
-    local shellCompDirectiveFilterDirs=16
-
-    local lastParam lastChar flagPrefix requestComp out directive comp lastComp noSpace
-    local -a completions
-
-    __classroom_debug "\n========= starting completion logic =========="
-    __classroom_debug "CURRENT: ${CURRENT}, words[*]: ${words[*]}"
-
-    # The user could have moved the cursor backwards on the command-line.
-    # We need to trigger completion from the $CURRENT location, so we need
-    # to truncate the command-line ($words) up to the $CURRENT location.
-    # (We cannot use $CURSOR as its value does not work when a command is an alias.)
-    words=("${=words[1,CURRENT]}")
-    __classroom_debug "Truncated words[*]: ${words[*]},"
-
-    lastParam=${words[-1]}
-    lastChar=${lastParam[-1]}
-    __classroom_debug "lastParam: ${lastParam}, lastChar: ${lastChar}"
-
-    # For zsh, when completing a flag with an = (e.g., classroom -n=<TAB>)
-    # completions must be prefixed with the flag
-    setopt local_options BASH_REMATCH
-    if [[ "${lastParam}" =~ '-.*=' ]]; then
-        # We are dealing with a flag with an =
-        flagPrefix="-P ${BASH_REMATCH}"
-    fi
-
-    # Prepare the command to obtain completions
-    requestComp="${words[1]} __complete ${words[2,-1]}"
-    if [ "${lastChar}" = "" ]; then
-        # If the last parameter is complete (there is a space following it)
-        # We add an extra empty parameter so we can indicate this to the go completion code.
-        __classroom_debug "Adding extra empty parameter"
-        requestComp="${requestComp} \"\""
-    fi
-
-    __classroom_debug "About to call: eval ${requestComp}"
-
-    # Use eval to handle any environment variables and such
-    out=$(eval ${requestComp} 2>/dev/null)
-    __classroom_debug "completion output: ${out}"
-
-    # Extract the directive integer following a : from the last line
-    local lastLine
-    while IFS='\n' read -r line; do
-        lastLine=${line}
-    done < <(printf "%s\n" "${out[@]}")
-    __classroom_debug "last line: ${lastLine}"
-
-    if [ "${lastLine[1]}" = : ]; then
-        directive=${lastLine[2,-1]}
-        # Remove the directive including the : and the newline
-        local suffix
-        (( suffix=${#lastLine}+2))
-        out=${out[1,-$suffix]}
-    else
-        # There is no directive specified.  Leave $out as is.
-        __classroom_debug "No directive found.  Setting do default"
-        directive=0
-    fi
-
-    __classroom_debug "directive: ${directive}"
-    __classroom_debug "completions: ${out}"
-    __classroom_debug "flagPrefix: ${flagPrefix}"
-
-    if [ $((directive & shellCompDirectiveError)) -ne 0 ]; then
-        __classroom_debug "Completion received error. Ignoring completions."
-        return
-    fi
-
-    local activeHelpMarker="_activeHelp_ "
-    local endIndex=${#activeHelpMarker}
-    local startIndex=$((${#activeHelpMarker}+1))
-    local hasActiveHelp=0
-    while IFS='\n' read -r comp; do
-        # Check if this is an activeHelp statement (i.e., prefixed with $activeHelpMarker)
-        if [ "${comp[1,$endIndex]}" = "$activeHelpMarker" ];then
-            __classroom_debug "ActiveHelp found: $comp"
-            comp="${comp[$startIndex,-1]}"
-            if [ -n "$comp" ]; then
-                compadd -x "${comp}"
-                __classroom_debug "ActiveHelp will need delimiter"
-                hasActiveHelp=1
-            fi
-
-            continue
-        fi
-
-        if [ -n "$comp" ]; then
-            # If requested, completions are returned with a description.
-            # The description is preceded by a TAB character.
-            # For zsh's _describe, we need to use a : instead of a TAB.
-            # We first need to escape any : as part of the completion itself.
-            comp=${comp//:/\\:}
-
-            local tab="$(printf '\t')"
-            comp=${comp//$tab/:}
-
-            __classroom_debug "Adding completion: ${comp}"
-            completions+=${comp}
-            lastComp=$comp
-        fi
-    done < <(printf "%s\n" "${out[@]}")
-
-    # Add a delimiter after the activeHelp statements, but only if:
-    # - there are completions following the activeHelp statements, or
-    # - file completion will be performed (so there will be choices after the activeHelp)
-    if [ $hasActiveHelp -eq 1 ]; then
-        if [ ${#completions} -ne 0 ] || [ $((directive & shellCompDirectiveNoFileComp)) -eq 0 ]; then
-            __classroom_debug "Adding activeHelp delimiter"
-            compadd -x "--"
-            hasActiveHelp=0
-        fi
-    fi
-
-    if [ $((directive & shellCompDirectiveNoSpace)) -ne 0 ]; then
-        __classroom_debug "Activating nospace."
-        noSpace="-S ''"
-    fi
-
-    if [ $((directive & shellCompDirectiveFilterFileExt)) -ne 0 ]; then
-        # File extension filtering
-        local filteringCmd
-        filteringCmd='_files'
-        for filter in ${completions[@]}; do
-            if [ ${filter[1]} != '*' ]; then
-                # zsh requires a glob pattern to do file filtering
-                filter="\*.$filter"
-            fi
-            filteringCmd+=" -g $filter"
-        done
-        filteringCmd+=" ${flagPrefix}"
-
-        __classroom_debug "File filtering command: $filteringCmd"
-        _arguments '*:filename:'"$filteringCmd"
-    elif [ $((directive & shellCompDirectiveFilterDirs)) -ne 0 ]; then
-        # File completion for directories only
-        local subdir
-        subdir="${completions[1]}"
-        if [ -n "$subdir" ]; then
-            __classroom_debug "Listing directories in $subdir"
-            pushd "${subdir}" >/dev/null 2>&1
-        else
-            __classroom_debug "Listing directories in ."
-        fi
-
-        local result
-        _arguments '*:dirname:_files -/'" ${flagPrefix}"
-        result=$?
-        if [ -n "$subdir" ]; then
-            popd >/dev/null 2>&1
-        fi
-        return $result
-    else
-        __classroom_debug "Calling _describe"
-        if eval _describe "completions" completions $flagPrefix $noSpace; then
-            __classroom_debug "_describe found some completions"
-
-            # Return the success of having called _describe
-            return 0
-        else
-            __classroom_debug "_describe did not find completions."
-            __classroom_debug "Checking if we should do file completion."
-            if [ $((directive & shellCompDirectiveNoFileComp)) -ne 0 ]; then
-                __classroom_debug "deactivating file completion"
-
-                # We must return an error code here to let zsh know that there were no
-                # completions found by _describe; this is what will trigger other
-                # matching algorithms to attempt to find completions.
-                # For example zsh can match letters in the middle of words.
-                return 1
-            else
-                # Perform file completion
-                __classroom_debug "Activating file completion"
-
-                # We must return the result of this command, so it must be the
-                # last command, or else we must store its result to return it.
-                _arguments '*:filename:_files'" ${flagPrefix}"
-            fi
-        fi
-    fi
-}
-
-# don't run the completion function when being source-ed or eval-ed
-if [ "$funcstack[1]" = "_classroom" ]; then
-    _classroom
-fi

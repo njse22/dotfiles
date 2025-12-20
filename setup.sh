@@ -1,5 +1,10 @@
 #!/bin/bash
 
+##############################################################
+#  WARNING THIS IS OLD SCRIPT, IT DOES NOT THE ACTUAL SETUP  #
+##############################################################
+
+
 # SOFTWAE LIST
 # Development
 # - Postman (manual)
