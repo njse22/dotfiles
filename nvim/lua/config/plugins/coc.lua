@@ -174,6 +174,21 @@ keyset("n", "<space>k", ":<C-u>CocPrev<cr>", opts)
 -- Resume latest coc list
 keyset("n", "<space>p", ":<C-u>CocListResume<cr>", opts)
 
+-- Telescope support: 
+-- https://github.com/fannheyward/telescope-coc.nvim
+require("telescope").setup({
+  extensions = {
+    coc = {
+--        theme = 'ivy',
+        prefer_locations = true, -- always use Telescope locations to preview definitions/declarations/implementations etc
+        push_cursor_on_edit = true, -- save the cursor position to jump back in the future
+        timeout = 3000, -- timeout for coc commands
+    }
+  },
+})
+require('telescope').load_extension('coc')
+
+
 vim.g.coc_global_extensions = {
     
   -- 'coc-clangd',
