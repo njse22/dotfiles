@@ -5,9 +5,9 @@
 # \__,_/_/_/\__,_/____/
 # 
 
-############
-#  COLORS  #
-############
+#######################################################################
+#                               COLORS                                #
+#######################################################################
 
 # Black        0;30     Dark Gray     1;30
 # Red          0;31     Light Red     1;31
@@ -36,18 +36,18 @@ COLOR_LIGHT_CYAN='\033[1;36m'
 COLOR_WHITE='\033[1;37m'
 NC='\033[0m' # No Color / Reset
 
-###########################
-#  ENVIRONMENT VARIABLES  #
-###########################
+#######################################################################
+#                        ENVIRONMENT VARIABLES                        #
+#######################################################################
 
 export EDITOR="nvim"
 
 # CTRL-Y to copy the command into clipboard using wl-copy
 export FZF_CTRL_R_OPTS="
-  --style full
-  --bind 'ctrl-y:execute-silent(echo -n {2..} | wl-copy )+abort'
-  --color header:italic
-  --header 'Press CTRL-Y to copy command into clipboard'"
+--style full
+--bind 'ctrl-y:execute-silent(echo -n {2..} | wl-copy )+abort'
+--color header:italic
+--header 'Press CTRL-Y to copy command into clipboard'"
 
 export NVIM_DIR="$HOME/.local/share/nvim/"
 export NVIM_RC="$HOME/.config/nvim/init.vim"
@@ -59,9 +59,9 @@ export PATH="$GOPATH/bin:$PATH"
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$HOME/.local/bin
 
-##################
-#  CUSTOM ALIAS  #
-##################
+#######################################################################
+#                            CUSTOM ALIAS                             #
+#######################################################################
 
 alias gr="grep --exclude-dir=build --exclude-dir=swig --exclude-dir=.git --exclude=tags -rniI "
 alias v='nvim'
@@ -89,10 +89,9 @@ alias bat='batcat'
 # 2. update SEAMCAT jar version
 alias SEAMCAT='/usr/local/java/jre1.8.0_411/bin/java -jar ~/Software/SEAMCAT-5.5.0-OFFICIAL.jar'
 
-
-######################
-#  CUSTOM FUNCTIONS  #
-######################
+#######################################################################
+#                          CUSTOM FUNCTIONS                           #
+#######################################################################
 
 # clear ; for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do clear;pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done; cmatrix
 function neo(){
@@ -108,18 +107,14 @@ function neo(){
 function fzf-open-file-or-dir() {
     zle -I 
 
-    local state_file=$(mktemp)
-
-    echo "cmd" > "$state_file"
-
     local show_preview='
-	if [ -f {} ]; then 
-	   batcat -n --color=always {}
-	elif [ -d {} ]; then
-	    tree -C {}
+    if [ -f {} ]; then 
+	batcat -n --color=always {}
+    elif [ -d {} ]; then
+	tree -C {}
 	fi'
 
-    local menu_string="
+	local menu_string="
 	${COLOR_YELLOW}
 	[            Menu Options            ]
 	${NC}
@@ -131,56 +126,39 @@ function fzf-open-file-or-dir() {
 	5. CTRL - D  : Search Only Directories
 	6. CTRL - F  : Search Only Files 
 	7. ESC	     : Exit 
-	${NC}
-    "
+	${NC}"
 
-    local toggle_cmd="
-	if [[ \$(cat $state_file) == 'cmd' ]]; then 
-	    echo 'menu' > $state_file; 
-	else 
-	    echo 'cmd' > $state_file; 
-	fi"
+	local cmd="command find -L . \
+	    \\( -path '*/\\.*' -o -fstype 'dev' -o -fstype 'proc' \\) -prune \
+	    -o -type f -print \
+	    -o -type d -print \
+	    -o -type l -print 2> /dev/null | sed 1d | cut -b3-"
 
-    local preview_logic="
-	if [[ \$(cat $state_file) == 'cmd' ]]; then 
-	    ${show_preview}; 
-	else 
-	    echo '$menu_string'; 
-	fi"
+	local out=$(eval $cmd | 
+	    fzf  \
+	    --style full \
+	    --pointer='→' \
+	    --walker-skip .git,node_modules,target \
+	    --preview-window 45% \
+	    --preview "$show_preview" \
+	    --bind "?:preview:echo '$menu_string'" \
+	    --bind 'ctrl-/:change-preview-window(down|hidden|)' \
+	    --bind "alt-d:execute(mkdir -p {q})+reload($cmd)" \
+	    --bind "alt-f:execute-silent(touch {q})+reload($cmd)" \
+	    --bind "ctrl-a:change-prompt(Search> )+reload($cmd)" \
+	    --bind 'ctrl-d:change-prompt(Directories> )+reload(find * -type d -maxdepth 3)' \
+	    --bind 'ctrl-f:change-prompt(Files> )+reload(find * -type f)' \
+	    --header 'Press ? to toggle menu' 
+	)
 
-    local cmd="command find -L . \
- 	\\( -path '*/\\.*' -o -fstype 'dev' -o -fstype 'proc' \\) -prune \
- 	-o -type f -print \
- 	-o -type d -print \
- 	-o -type l -print 2> /dev/null | sed 1d | cut -b3-"
-
-    local out=$(eval $cmd | 
-	fzf  \
-	--style full \
-	--pointer='→' \
-	--walker-skip .git,node_modules,target \
-	--preview-window 45% \
-	--preview "$preview_logic" \
-	--bind "?:execute-silent($toggle_cmd)+refresh-preview" \
-	--bind 'ctrl-/:change-preview-window(down|hidden|)' \
-	--bind "alt-d:execute(mkdir {q})+reload($cmd)" \
-	--bind "alt-f:execute-silent(touch {q})+reload($cmd)" \
-	--bind "ctrl-a:change-prompt(Search> )+reload($cmd)" \
-	--bind 'ctrl-d:change-prompt(Directories> )+reload(find * -type d -maxdepth 3)' \
-	--bind 'ctrl-f:change-prompt(Files> )+reload(find * -type f)' \
-	--header 'Press ? to toggle menu' 
-    )
-
-    if [ -f "$out" ]; then
-	"$EDITOR" "$out" < /dev/tty
-    elif [ -d "$out" ]; then
-	BUFFER="cd $out"
-	CURSOR=$#BUFFER
-	zle reset-prompt
-    fi
-
-    rm -f "$state_file"
-}
+	if [ -f "$out" ]; then
+	    "$EDITOR" "$out" < /dev/tty
+	elif [ -d "$out" ]; then
+	    BUFFER="cd $out"
+	    CURSOR=$#BUFFER
+	    zle reset-prompt
+	fi
+    }
 
 zle     -N   fzf-open-file-or-dir
 bindkey '^P' fzf-open-file-or-dir
@@ -188,9 +166,9 @@ bindkey '^P' fzf-open-file-or-dir
 # git --help -a | grep -E '^\s+' | fzf --style full --bind 'enter:execute( echo -n {} | awk '\''{print "git " $1}'\'' )+abort'
 #
 _fzf_complete_git() {
-  _fzf_complete -- "$@" < <(
-    git --help -a | grep -E '^\s+' | awk '{print $1}'
-  )
+    _fzf_complete -- "$@" < <(
+	git --help -a | grep -E '^\s+' | awk '{print $1}'
+    )
 }
 
 function __fzf_git_helper(){
@@ -215,12 +193,12 @@ function __fzf_py_env(){
 
     local out=$(ls $venv_dir | 
 	FUNC_BODY="$opt" fzf \
-	    --tmux 60% \
-	    --pointer ▶ \
-	    --border-label ' py-venv (Helper to python envioroments) ' --input-label ' Input ' \
-	    --header 'Press ALT-C (create) / ALT-R (remove) / ENTER (activate)' \
-	    --bind "alt-c:execute(zsh -c 'eval \$FUNC_BODY; py-venv -c {q}; py-venv -a {q}; py-venv -i')+reload(ls $HOME/.venv)" \
-	    --bind "alt-r:execute-silent(zsh -c 'eval \$FUNC_BODY; py-venv -r {}')+reload(ls $HOME/.venv)" )
+	--tmux 60% \
+	--pointer ▶ \
+	--border-label ' py-venv (Helper to python envioroments) ' --input-label ' Input ' \
+	--header 'Press ALT-C (create) / ALT-R (remove) / ENTER (activate)' \
+	--bind "alt-c:execute(zsh -c 'eval \$FUNC_BODY; py-venv -c {q}; py-venv -a {q}; py-venv -i')+reload(ls $HOME/.venv)" \
+	--bind "alt-r:execute-silent(zsh -c 'eval \$FUNC_BODY; py-venv -r {}')+reload(ls $HOME/.venv)" )
 
     if [[ -n $out ]]; then
 	py-venv -a $out
@@ -231,56 +209,56 @@ function py-venv() {
     local venv_dir=~/.venv
 
     case $1 in
-        -l|--list)
-            if [[ -d "$venv_dir" ]]; then
-                echo -e "${COLOR_CYAN}Available virtual environments:${NC}"
-                ls "$venv_dir"
-            else
-                echo -e "${COLOR_CYAN}No virtual environments found in $venv_dir.${NC}"
-            fi
-            ;;
+	-l|--list)
+	    if [[ -d "$venv_dir" ]]; then
+		echo -e "${COLOR_CYAN}Available virtual environments:${NC}"
+		ls "$venv_dir"
+	    else
+		echo -e "${COLOR_CYAN}No virtual environments found in $venv_dir.${NC}"
+	    fi
+	    ;;
 
-        -a|--activate)
-            if [[ -z "$2" ]]; then
-                echo -e "${COLOR_CYAN}Error: Please specify a virtual environment to activate.${NC}"
-                return 1
-            fi
+	-a|--activate)
+	    if [[ -z "$2" ]]; then
+		echo -e "${COLOR_CYAN}Error: Please specify a virtual environment to activate.${NC}"
+		return 1
+	    fi
 
-            local activate_script="$venv_dir/$2/bin/activate"
-            if [[ -f "$activate_script" ]]; then
-                source "$activate_script"
-                echo -e "${COLOR_CYAN}Activated virtual environment: $2${NC}"
-            else
-                echo -e "${COLOR_CYAN}Error: Virtual environment '$2' does not exist.${NC}"
-                return 1
-            fi
-            ;;
+	    local activate_script="$venv_dir/$2/bin/activate"
+	    if [[ -f "$activate_script" ]]; then
+		source "$activate_script"
+		echo -e "${COLOR_CYAN}Activated virtual environment: $2${NC}"
+	    else
+		echo -e "${COLOR_CYAN}Error: Virtual environment '$2' does not exist.${NC}"
+		return 1
+	    fi
+	    ;;
 
-        -c|--create)
-            if [[ -z "$2" ]]; then
-                echo -e "${COLOR_CYAN}Error: Please specify a name for the new virtual environment.${NC}"
-                return 1
-            fi
+	-c|--create)
+	    if [[ -z "$2" ]]; then
+		echo -e "${COLOR_CYAN}Error: Please specify a name for the new virtual environment.${NC}"
+		return 1
+	    fi
 
-            mkdir -p "$venv_dir"
-            python3 -m venv "$venv_dir/$2"
-            echo -e "${COLOR_CYAN}Created virtual environment: $2${NC}"
-            ;;
+	    mkdir -p "$venv_dir"
+	    python3 -m venv "$venv_dir/$2"
+	    echo -e "${COLOR_CYAN}Created virtual environment: $2${NC}"
+	    ;;
 
-        -r|--remove)
-            if [[ -z "$2" ]]; then
-                echo -e "${COLOR_CYAN}Error: Please specify a virtual environment to remove.${NC}"
-                return 1
-            fi
+	-r|--remove)
+	    if [[ -z "$2" ]]; then
+		echo -e "${COLOR_CYAN}Error: Please specify a virtual environment to remove.${NC}"
+		return 1
+	    fi
 
-            if [[ -d "$venv_dir/$2" ]]; then
-                rm -rf "$venv_dir/$2"
-                echo -e "${COLOR_CYAN}Removed virtual environment: $2${NC}"
-            else
-                echo -e "${COLOR_CYAN}Error: Virtual environment '$2' does not exist.${NC}"
-                return 1
-            fi
-            ;;
+	    if [[ -d "$venv_dir/$2" ]]; then
+		rm -rf "$venv_dir/$2"
+		echo -e "${COLOR_CYAN}Removed virtual environment: $2${NC}"
+	    else
+		echo -e "${COLOR_CYAN}Error: Virtual environment '$2' does not exist.${NC}"
+		return 1
+	    fi
+	    ;;
 
 	-i|--install)
 	    if [[ -n $VIRTUAL_ENV ]]; then
@@ -290,24 +268,24 @@ function py-venv() {
 	    fi
 	    ;;
 
-        -h|--help)
-            echo -e "${COLOR_CYAN}
-            Usage: py-venv [OPTION] [VENV_NAME]
+	-h|--help)
+	    echo -e "${COLOR_CYAN}
+	    Usage: py-venv [OPTION] [VENV_NAME]
 
-            Options:
-                -l, --list            List all virtual environments
-                -a, --activate VENV   Activate the specified virtual environment
-                -c, --create VENV     Create a new virtual environment
-                -r, --remove VENV     Remove (delete) the specified virtual environment
-		-i, --install	      Install common python libraries (pynvim, pyright)
-                -h, --help            Show this help message
-            ${NC}"
-            ;;
+	    Options:
+	    -l, --list            List all virtual environments
+	    -a, --activate VENV   Activate the specified virtual environment
+	    -c, --create VENV     Create a new virtual environment
+	    -r, --remove VENV     Remove (delete) the specified virtual environment
+	    -i, --install	      Install common python libraries (pynvim, pyright)
+	    -h, --help            Show this help message
+	    ${NC}"
+	    ;;
 
-        *)
-            echo -e "${COLOR_CYAN}Error: Invalid option. Use 'py-venv --help' for usage information.${NC}"
-            return 1
-            ;;
+	*)
+	    echo -e "${COLOR_CYAN}Error: Invalid option. Use 'py-venv --help' for usage information.${NC}"
+	    return 1
+	    ;;
     esac
 }
 
