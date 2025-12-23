@@ -18,12 +18,14 @@ function M.query_ollama(prompt)
   local result = handle:read("*a")
   handle:close()
 
+  -- Extraer la respuesta del JSON
   local response = ""
   for line in result:gmatch("[^\r\n]+") do
     local json = vim.json.decode(line)
     response = response .. json.response
   end
 
+  -- Mostrar en un buffer
 local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(response, "\n"))
   vim.api.nvim_command("vsplit | buffer " .. buf)

@@ -21,8 +21,6 @@ vim.opt.backspace = { "indent", "eol", "start" }
 -- vim.opt.clipboard = "unnamed"
 vim.opt.clipboard = "unnamedplus"
 
-vim.opt.mouse = "a"
-
 -- Espaciado de indentación
 vim.opt.shiftwidth = 4
 
@@ -90,9 +88,6 @@ vim.cmd("syntax enable")
 
 -- Resaltar la línea actual con un color gris en terminales compatibles
 vim.cmd("highlight CursorLine ctermbg=grey")
-
-vim.g.mapleader = ","
-
 
 -- Deshabilitar teclas de dirección en modo normal
 vim.api.nvim_set_keymap('n', '<Up>', '<nop>', { noremap = true, silent = true })
@@ -202,11 +197,11 @@ vim.api.nvim_set_keymap('v', 'K', ":m '<-2<CR>gv=gv", { noremap = true })
 -- ====================
 -- Command Mode Mapping
 -- ====================
-vim.api.nvim_set_keymap('c', '<C-p>', '<Up>',    { noremap = true })
-vim.api.nvim_set_keymap('c', '<C-n>', '<Down>',  { noremap = true })
+vim.api.nvim_set_keymap('c', '<C-p>', '<Up>', { noremap = true })
+vim.api.nvim_set_keymap('c', '<C-n>', '<Down>', { noremap = true })
 vim.api.nvim_set_keymap('c', '<C-f>', '<Right>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<C-b>', '<Left>',  { noremap = true })
-vim.api.nvim_set_keymap('c', '<C-d>', '<Del>',   { noremap = true })
+vim.api.nvim_set_keymap('c', '<C-b>', '<Left>', { noremap = true })
+vim.api.nvim_set_keymap('c', '<C-d>', '<Del>', { noremap = true })
 vim.api.nvim_set_keymap('c', '<A-l>', '<Right>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<A-h>', '<Left>',  { noremap = true })
+vim.api.nvim_set_keymap('c', '<A-h>', '<Left>', { noremap = true })
 
