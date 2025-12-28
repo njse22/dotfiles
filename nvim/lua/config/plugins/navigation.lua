@@ -1,107 +1,89 @@
------------------------
---  NERDTree config  --
------------------------
-vim.g.nerdtree_tabs_autoclose = 0
-vim.g.NERDSpaceDelims = 1
-vim.g.NERDDefaultAlign = 'left'
-vim.g.NERDTreeDirArrowExpandable = '▸'
-vim.g.NERDTreeDirArrowCollapsible = '▾'
-vim.g.NERDTreeChDirMode = 2
-vim.g.NERDTreeIgnore = { '\\.rbc$', '\\~$', '\\.pyc$', '\\.db$', '\\.sqlite$', '__pycache__' }
-vim.g.NERDTreeSortOrder = { '^__\\.py$', '\\/$', '*', '\\.swp$', '\\.bak$', '\\~$' }
-vim.g.nerdtree_tabs_focus_on_files = 1
-vim.g.NERDTreeWinSize = 25
+return {
+    -- NERDTree
+    {
+        "preservim/nerdtree",
+        cmd = "NERDTreeToggle",
+        config = function()
+            vim.g.nerdtree_tabs_autoclose = 0
+            vim.g.NERDSpaceDelims = 1
+            vim.g.NERDDefaultAlign = 'left'
+            vim.g.NERDTreeDirArrowExpandable = '▸'
+            vim.g.NERDTreeDirArrowCollapsible = '▾'
+            vim.g.NERDTreeChDirMode = 2
+            vim.g.NERDTreeIgnore = { '\\.rbc$', '\\~$', '\\.pyc$', '\\.db$', '\\.sqlite$', '__pycache__' }
+            vim.g.NERDTreeSortOrder = { '^__\\.py$', '\\/$', '*', '\\.swp$', '\\.bak$', '\\~$' }
+            vim.g.nerdtree_tabs_focus_on_files = 1
+            vim.g.NERDTreeWinSize = 25
+        end,
+    },
 
-vim.api.nvim_set_keymap('n', '<leader>n', ':NERDTreeToggle<CR>', { noremap = true, silent = true })
+    -- Fzf-lua
+    {
+        "ibhagwan/fzf-lua",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            local fzf = require('fzf-lua')
 
--- vim.api.nvim_create_autocmd("VimEnter", {
---   pattern = "*",
---   command = "NERDTree"
--- })
+            fzf.setup{
+                winopts = {
+                height = 0.85,
+                width = 0.85,
+                border = "rounded",
 
-------------------------
---  Telescope Config  --
-------------------------
--- Función para crear archivos con Telescope
-local create_file = function(prompt_bufnr)
-  local action_state = require('telescope.actions.state')
-  local actions = require('telescope.actions')
+                preview = {
+                    default = 'bat',  -- Use bat for file previews
+                    vertical = 'up:60%',  -- Preview window position
+                    horizontal = 'right:60%',
+                    layout = "flex",
+                    border = "border-top",
+                },
+                },
+                git = {
+                file_icons = true,  -- Show Git icons for files
+                },
 
-  -- Obtén el directorio de trabajo actual
-  local cwd = vim.fn.getcwd()
+                fzf_opts = {
+                ['--layout'] = 'default',
+                ['--print-query'] = "",
+                },
+                defaults = {
+                prompt = "   ",
+                cwd_prompt = false,
+                },
+            }
 
-  actions.close(prompt_bufnr)  -- Cierra el buffer de Telescope
-  
-  -- Solicita el nombre del archivo
-  local new_file = vim.fn.input("New file: ", cwd .. "/")
-  
-  -- Si se proporciona un nombre de archivo, lo abre en una nueva ventana
-  if new_file and new_file ~= "" then
-    -- Crear directorios si no existen
-    local mkdir_cmd = 'mkdir -p ' .. vim.fn.fnamemodify(new_file, ':h')
-    os.execute(mkdir_cmd)
-    
-    -- Abrir el nuevo archivo
-    vim.cmd("edit " .. new_file)
-  end
-end
+            vim.keymap.set('n',      '<C-p>', fzf.files,      {})
+            vim.keymap.set('n', '<leader>fg', fzf.live_grep,  {})
+            vim.keymap.set('n', '<leader>fb', fzf.buffers,    {})
+            vim.keymap.set('n', '<leader>fk', fzf.keymaps,    {})
+            vim.keymap.set('n', '<leader>gs', fzf.git_commit, {})
+            vim.keymap.set('n', '<leader>gb', fzf.git_blame,  {})
 
+            vim.keymap.set({ "n", "v", "i" }, "<C-x><C-f>",
+            function() fzf.complete_path() end,
+            { silent = true, desc = "Fuzzy complete path" })
+        end
+    },
 
-local telescope = require("telescope")
+    -- Tmux Navigator
+    {
+        "christoomey/vim-tmux-navigator",
+        cmd = {
+            "TmuxNavigateLeft",
+            "TmuxNavigateDown",
+            "TmuxNavigateUp",
+            "TmuxNavigateRight",
+            "TmuxNavigatePrevious",
+        },
+        keys = {
+            { "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+            { "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+            { "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+            { "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+            { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+        },
+    },
 
-vimgrep_arguments = {
-    "grep",
-    "--color=never",
-    "--with-filename",
-    "--line-number",
-    "-b",
-    "--ignore-case",
-    "--recursive",
-    "--no-messages",
+    -- RouterOS Syntax
+    { "krcs/vim-routeros-syntax" }
 }
-
-telescope.setup({
-    defaults = {
-	layout_strategy = "horizontal",
-	prompt_prefix = "   ",
-	layout_config = {
-	    horizontal = {
-		prompt_position = "bottom",
-		preview_width = 0.55,
-	    },
-	    vertical = {
-		mirror = true,
-	    },
-	    width = 0.85,
-	    height = 0.85,
-	    preview_cutoff = 120,
-	},
-	file_ignore_patterns = { 
-	    "node_modules", 
-	    "build", 
-	    "gradle", 
-	    "bin", 
-	    "out", 
-	    ".env" 
-	}
-    },
-
-    pickers = {
-      find_files = { previewer = true },
-      buffers = { previewer = true },
-      live_grep = {
-	  vimgrep_arguments = vimgrep_arguments,
-      },
-    },
-})
-
-telescope.load_extension('fzf')
-telescope.load_extension('file_browser')
-telescope.load_extension('project')
-
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<C-p>', builtin.find_files, {})
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
--- vim.keymap.set('n', '<C-h>', builtin.keymaps, {})

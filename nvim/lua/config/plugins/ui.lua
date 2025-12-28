@@ -1,127 +1,102 @@
-----------------------------------------------
---  Theme and User Interface configuration  --
-----------------------------------------------
+return {
+  -- Theme
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme "catppuccin-mocha"
+      vim.api.nvim_set_hl(0, "ScopeColor", { fg = "#F38BA8", bold = true })
+    end,
+  },
+  {
+    "ayu-theme/ayu-vim",
+    name = "ayu-vim",
+    config = function()
+       vim.g.ayucolor = "mirage"
+    end
+  },
+  { 'pineapplegiant/spaceduck' },
+  { 'rose-pine/neovim', name = 'rose-pine' },
+  { 'joshdick/onedark.vim' },
 
--- vim.o.background = "dark"
-vim.cmd([[colorscheme catppuccin-mocha]])
+  -- Lualine
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require('lualine').setup {
+        options = {
+          icons_enabled = true,
+          theme = 'auto',
+          component_separators = { left = '', right = ''},
+          section_separators = { left = '', right = ''},
+          disabled_filetypes = {
+              statusline = {},
+              winbar = {},
+          },
+          ignore_focus = {},
+          always_divide_middle = true,
+          always_show_tabline = true,
+          globalstatus = false,
+          refresh = {
+              statusline = 1000,
+              tabline = 1000,
+              winbar = 1000,
+              refresh_time = 16, -- ~60fps
+              events = {
+              'WinEnter',
+              'BufEnter',
+              'BufWritePost',
+              'SessionLoadPost',
+              'FileChangedShellPost',
+              'VimResized',
+              'Filetype',
+              'CursorMoved',
+              'CursorMovedI',
+              'ModeChanged',
+              },
+          }
+        },
+        sections = {
+          lualine_a = {'mode'},
+          lualine_b = {'branch', 'diff', 'diagnostics'},
+          lualine_c = {'filename'},
+          lualine_x = {'encoding', 'fileformat', 'filetype'},
+          lualine_y = {'progress'},
+          lualine_z = {'location'}
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = {'filename'},
+          lualine_x = {'location'},
+          lualine_y = {},
+          lualine_z = {}
+        },
+        tabline = {
+          lualine_a = {
+              {
+              'buffers',
+              mode = 2,
+              use_mode_colors = true,
+              symbols = {
+                  modified = ' ●',
+                  alternate_file = '#',
+                  directory =  '',
+              },
+              }
+          },
+          lualine_z = {'Tabs'}
 
-vim.g['airline#extensions#tabline#enabled'] = 1
-vim.g.airline_powerline_fonts = 1
+        },
+        winbar = {},
+        inactive_winbar = {},
+        extensions = {'fzf'}
+      }
+    end,
+  },
 
------------------
---  Dashboard  --
------------------
-
-local headers = require "headers.headers"
-local utils = require('utils.utils')
-
-
-require('dashboard').setup {
-    theme = 'doom',
-    config = {
-
-	header = headers.skull,
-
-	center = {
-	    {
-		icon = ' ',
-		icon_hl = 'Title',
-		desc = 'New File            ',
-		desc_hl = 'String',
-		key = 'e',
-		keymap = '',
-		key_hl = 'Number',
-		key_format = ' %s', 
-		action = 'enew | startinsert'
-	    },
-
-	    {
-		icon = '󰉋 ',
-		icon_hl = 'Title',
-		desc = 'Create Directory ',
-		desc_hl = 'String',
-		key = 'mk',
-		keymap = '',
-		key_hl = 'Number',
-		key_format = ' %s', 
-		action = utils.create_new_dir
-	    },
-
-	    {
-		icon = '󰙅 ',
-		icon_hl = 'Title',
-		desc = 'Toggle File Explorer',
-		desc_hl = 'String',
-		key = 'ee',
-		keymap = '',
-		key_hl = 'Number',
-		key_format = ' %s', 
-		action = 'NERDTreeToggle'
-	    },
-
-	    {
-		icon = '󰱼 ',
-		icon_hl = 'Title',
-		desc = 'Find File           ',
-		desc_hl = 'String',
-		key = 'fp',
-		keymap = '',
-		key_hl = 'Number',
-		key_format = ' %s', 
-		action = 'Telescope find_files'
-	    },
-
-	    {
-		icon = ' ',
-		icon_hl = 'Title',
-		desc = 'View Autocommands           ',
-		desc_hl = 'String',
-		key = 'fc',
-		keymap = '',
-		key_hl = 'Number',
-		key_format = ' %s', 	
-		action = 'Telescope autocommands'
-	    },
-
-	    {
-		icon = '󰌁 ',
-		icon_hl = 'Title',
-		desc = 'Set Colorschema           ',
-		desc_hl = 'String',
-		key = 'ft',
-		keymap = '',
-		key_hl = 'Number',
-		key_format = ' %s', 
-		action = 'Telescope colorscheme'
-	    },
-
-	    {
-		icon = ' ',
-		icon_hl = 'Title',
-		desc = 'Open Nvim config           ',
-		desc_hl = 'String',
-		key = 'vc',
-		keymap = '',
-		key_hl = 'Number',
-		key_format = ' %s', 
-		action = 'e ~/.config/nvim/init.lua'
-	    },
-
-	    {
-		icon = '󰅙 ',
-		icon_hl = 'Title',
-		desc = 'Quit Nvim            ',
-		desc_hl = 'String',
-		key = 'q',
-		keymap = '',
-		key_hl = 'Number',
-		key_format = ' %s', 
-		action = 'q '
-	    },
-
-    },
-    footer = {},
-    vertical_center = false, -- Center the Dashboard on the vertical (from top to bottom)
-    }
+  -- Icons
+  { "ryanoasis/vim-devicons" }
 }
-

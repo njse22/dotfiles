@@ -205,3 +205,58 @@ vim.api.nvim_set_keymap('c', '<C-d>', '<Del>', { noremap = true })
 vim.api.nvim_set_keymap('c', '<A-l>', '<Right>', { noremap = true })
 vim.api.nvim_set_keymap('c', '<A-h>', '<Left>', { noremap = true })
 
+---=================
+--  AUTOCOMMANDS  --
+---=================
+
+-- Remove white spaces
+--vim.api.nvim_set_hl(0, 'ExtraWhitespace', { ctermbg = 'darkgreen', bg = 'lightgreen' })
+
+local au_group = vim.api.nvim_create_augroup('vimrc_remove_withespaces', { clear = true })
+
+vim.api.nvim_create_autocmd({ 'BufWinEnter', 'InsertLeave' }, {
+  group = au_group,
+  pattern = '*',
+  command = [[match ExtraWhitespace /\s\+$/]],
+})
+
+vim.api.nvim_create_autocmd('InsertEnter', {
+  group = au_group,
+  pattern = '*',
+  command = [[match ExtraWhitespace /\s\+\%#\@<!$/]],
+})
+
+vim.api.nvim_create_autocmd('BufWinLeave', {
+  group = au_group,
+  pattern = '*',
+  callback = function()
+    vim.fn.clearmatches()
+  end,
+})
+
+vim.keymap.set('n', '<Leader>rs', function()
+  local saved_query = vim.fn.getreg('/')
+  local saved_view = vim.fn.winsaveview()
+
+  vim.cmd([[%s/\s\+$//e]])
+  vim.fn.setreg('/', saved_query)
+  vim.fn.winrestview(saved_view)
+  vim.cmd('nohl')
+end, { silent = true, desc = 'Remove trailing whitespaces' })
+
+local au_group = vim.api.nvim_create_augroup("vimrc_remember_cursor_position", { clear = true })
+
+-- Remenber last position
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = au_group,
+  pattern = "*",
+  callback = function()
+    local mark_line = vim.fn.line("'\"")
+    local total_lines = vim.fn.line("$")
+
+    if mark_line > 1 and mark_line <= total_lines then
+      vim.cmd('normal! g`"')
+    end
+  end,
+})
+
