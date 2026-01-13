@@ -138,18 +138,19 @@ typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_last
 
 [ -f ~/.keys.zsh ] && source ~/.keys.zsh
 
-[ -f ~/._gowall ] && source ~/._gowall
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+[ -f ~/._gowall ] && source ~/._gowall
 
-if [[ -z "$TMUX" ]]; then
-    if tmux has-session 2>/dev/null; then
-        exec tmux attach 
-    else
-        exec tmux
-    fi
-fi
+source /etc/zsh_command_not_found
+
+#if [[ -z "$TMUX" ]]; then
+#    if tmux has-session 2>/dev/null; then
+#        exec tmux attach 
+#    else
+#        exec tmux
+#    fi
+#fi
 
 #########################
 #  AUTO GENERATED ZONE  #
@@ -164,3 +165,8 @@ export NVM_DIR="$HOME/.nvm"
 fpath=(/opt/vagrant/embedded/gems/gems/vagrant-2.4.9/contrib/zsh $fpath)
 compinit
 # <<<<  Vagrant command completion (end)
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+

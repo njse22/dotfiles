@@ -1,0 +1,37 @@
+snippet dep "Add a dependency"
+	implementation '${1:group}:${2:name}:${3:version}'
+
+snippet plug "Add a plugin"
+	id '${1:plugin-id}' version '${2:version}'
+
+snippet task "Register a task"
+	tasks.register('${1:taskName}') {
+		doLast {
+			println '${2:Hello world!}'
+		}
+	}
+
+snippet app "Basic Application Template"
+plugin {
+    id 'java'
+    id 'application'
+}
+
+application {
+    mainClass = '${1:MainClass}'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies{
+
+}
+
+jar {
+    manifest {
+	attributes 'Main-Class': '${1:MainClass}'
+    }
+    archiveBaseName = 'java'
+}

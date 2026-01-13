@@ -16,9 +16,9 @@ require("config.general")
 -- P4 SYNTAX CONFIGURATION
 -- ====================================================
 vim.filetype.add({
-    extension = {
-	p4 = "p4",
-    },
+	extension = {
+		p4 = "p4",
+	},
 })
 
 -- ====================================================
@@ -26,14 +26,14 @@ vim.filetype.add({
 -- ====================================================
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({
-	"git",
-	"clone",
-	"--filter=blob:none",
-	"https://github.com/folke/lazy.nvim.git",
-	"--branch=stable",
-	lazypath,
-  })
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
+	})
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -42,21 +42,26 @@ vim.opt.rtp:prepend(lazypath)
 -- ====================================================
 require("lazy").setup({
 
-    -- UI
-    require("config.plugins.ui"),
+	-- UI
+	require("config.plugins.ui"),
 
-    -- LSP
-    require("config.plugins.coc"),
+	-- LSP
+	require("config.plugins.coc"),
 
-    -- Lenguages
-    require("config.plugins.languages"),
+	-- Lenguages
+	require("config.plugins.languages"),
 
-    -- Navigation
-    require("config.plugins.navigation"),
+	-- Navigation
+	require("config.plugins.navigation"),
 
-    -- Editing
-    require("config.plugins.editing"),
+	-- Editing
+	require("config.plugins.editing"),
 
-    -- Utilities
-    require("config.plugins.snack"),
+	-- Utilities
+	require("config.plugins.snack"),
+
 })
+
+-- Custom Plugin funtions
+require('config.plugins.funtions')
+

@@ -1,3 +1,5 @@
+-- TODO:  <28-12-25, Nicolas J. Salazar E. (njse22)> -- Add descriptions to ALL mappings -> good for fzf keymaps
+
 -- Habilitar números en el editor
 vim.opt.number = true
 
@@ -132,7 +134,7 @@ vim.api.nvim_set_keymap('n', '<Leader>te', ':tabedit<cfile><CR>', { noremap = tr
 -- Limpiar coincidencias de búsqueda
 vim.api.nvim_set_keymap('n', '<Leader><Space>', ':nohlsearch<CR>', { noremap = true, silent = true })
 
--- Definir macros personalizadas
+-- "Definir" macros personalizadas
 vim.api.nvim_set_keymap('n', 'mu', ':normal! ddkP<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'md', ':normal! ddp<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'u1', ':normal! yypVr=<CR>', { noremap = true })
@@ -209,6 +211,59 @@ vim.api.nvim_set_keymap('c', '<A-h>', '<Left>', { noremap = true })
 --  AUTOCOMMANDS  --
 ---=================
 
+-- TODO:  <28-12-25, Nicolas J. Salazar E. (njse22)> -- Refactor this sessión
+
+-----------------
+--  Functions  --
+-----------------
+_G.surround_selection = function(char)
+    local pairs = {
+	['('] = ')',
+	['['] = ']',
+	['{'] = '}',
+	['<'] = '>',
+    }
+
+    local closing_char = pairs[char] or char
+
+    -- 1. gv     -> Recupera la última selección visual
+    -- 2. c      -> Corta la selección y entra en Insert Mode
+    -- 3. char   -> Escribe el carácter de apertura
+    -- 4. <C-r>" -> Pega el texto que acabamos de cortar (registro ")
+    -- 5. closing-> Escribe el cierre
+    -- 6. <Esc>  -> Sale del modo inserción
+    local sequence = string.format('gvc%s<C-r>"%s<Esc>', char, closing_char)
+
+    local keys = vim.api.nvim_replace_termcodes(sequence, true, false, true)
+    vim.api.nvim_feedkeys(keys, 'x', true) -- Nota: usamos 'x' para indicar contexto visual/extendido
+end
+
+vim.api.nvim_set_keymap('x', '<Leader>*', ':<C-u>lua _G.surround_selection("*")<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('x', '<Leader>$', ':<C-u>lua _G.surround_selection("$")<CR>', { noremap = true, silent = true })
+
+_G.surround_word = function(char)
+    -- Tabla de pares correspondientes
+    local pairs = {
+	['('] = ')',
+	['['] = ']',
+	['{'] = '}',
+	['<'] = '>',
+    }
+
+    local closing_char = pairs[char] or char
+
+    -- 1. ciw: Change Inner Word -> to register
+    -- 2. <C-r>": get word in register
+    local sequence = string.format('ciw%s<C-r>"%s<Esc>', char, closing_char)
+    -- Convertimos los códigos de terminal (como <Esc> o <C-r>) a bytes reales
+    local keys = vim.api.nvim_replace_termcodes(sequence, true, false, true)
+    -- Ejecutamos la secuencia de teclas
+    vim.api.nvim_feedkeys(keys, 'n', true)
+end
+
+vim.api.nvim_set_keymap('n', '<Leader>$', ':lua _G.surround_word("$")<CR>', { noremap = true, silent = true })
+
 -- Remove white spaces
 --vim.api.nvim_set_hl(0, 'ExtraWhitespace', { ctermbg = 'darkgreen', bg = 'lightgreen' })
 
@@ -226,13 +281,13 @@ vim.api.nvim_create_autocmd('InsertEnter', {
   command = [[match ExtraWhitespace /\s\+\%#\@<!$/]],
 })
 
-vim.api.nvim_create_autocmd('BufWinLeave', {
-  group = au_group,
-  pattern = '*',
-  callback = function()
-    vim.fn.clearmatches()
-  end,
-})
+-- vim.api.nvim_create_autocmd('BufWinLeave', {
+--   group = au_group,
+--   pattern = '*',
+--   callback = function()
+--     vim.fn.clearmatches()
+--   end,
+-- })
 
 vim.keymap.set('n', '<Leader>rs', function()
   local saved_query = vim.fn.getreg('/')

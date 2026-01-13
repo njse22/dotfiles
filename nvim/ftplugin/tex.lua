@@ -16,7 +16,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-
 -- Atajos rápidos para corrección:
 -- gqip hard Wrapping
 -- [s  -> Ir al siguiente error

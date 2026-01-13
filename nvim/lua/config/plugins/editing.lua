@@ -1,6 +1,11 @@
 return {
     -- Snippets
-    { "honza/vim-snippets" },
+    {
+	"honza/vim-snippets",
+	config = function ()
+	    vim.g.snips_author = "Nicolas J. Salazar E. (njse22)"
+	end
+    },
 
     -- Git
     {
@@ -19,12 +24,48 @@ return {
         end
     },
 
+    {
+        "lewis6991/gitsigns.nvim",
+        config = function()
+            require('gitsigns').setup {
+            --signs = {
+            --    -- Usamos barras verticales y caracteres más estéticos
+            --    add          = { text = '┃' },
+            --    change       = { text = '┃' },
+            --    delete       = { text = '_' },
+            --    topdelete    = { text = '‾' },
+            --    changedelete = { text = '~' },
+            --    untracked    = { text = '┆' },
+            --},
+            signcolumn = false,  -- Muestra la columna de signos (la barra lateral)
+            numhl      = false, -- Cambiar a true si quieres que el NÚMERO de línea cambie de color
+            linehl     = false, -- Cambiar a true si quieres que TODA la línea de fondo cambie de color
+            word_diff  = false, -- Cambiar a true para ver cambios dentro de la misma línea (muy útil)
+
+            -- Configuración del "Blame" (Texto fantasma)
+            current_line_blame = true, -- Muestra quién modificó la línea donde está el cursor
+            current_line_blame_opts = {
+        	virt_text = true,
+        	virt_text_pos = 'eol', -- 'eol' = end of line (al final de la línea)
+        	delay = 300,
+        	ignore_whitespace = false,
+            },
+            current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
+            }
+        end
+    },
+
     -- Alignment
-    { "junegunn/vim-easy-align" },
+    {
+        "junegunn/vim-easy-align",
+        cmd = "EasyAlign",
+    },
 
     -- Formatting
     {
         "stevearc/conform.nvim",
+        event = { "BufWritePre" },
+        cmd = { "ConformInfo" },
         config = function()
             require("conform").setup({
                 formatters_by_ft = {
@@ -53,5 +94,13 @@ return {
                 end,
             })
         end,
+    },
+
+    {
+    "folke/todo-comments.nvim",
+	dependencies = { "nvim-lua/plenary.nvim" },
+	event = { "BufReadPost", "BufNewFile" },
+	opts = { }
     }
+
 }
