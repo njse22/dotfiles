@@ -65,3 +65,4 @@ require("lazy").setup({
 -- Custom Plugin funtions
 require('config.plugins.funtions')
 
+

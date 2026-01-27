@@ -215,9 +215,49 @@ M.config = function()
     -- Resume latest coc list
     keyset("n", "<space>p", ":<C-u>CocListResume<cr>", opts)
 
-    -- Custom keys 
+    -- Custom keys
     -- Outline
     keyset("n", "<leader>o", ":<C-u>CocOutline<cr>", opts)
+
+    -- Toggle Ltex Language
+    local ltex_current_lang = "es"
+    vim.api.nvim_create_user_command("ToggleLtexLang", function()
+        if ltex_current_lang == "es" then
+            ltex_current_lang = "en-US"
+        else
+            ltex_current_lang = "es"
+        end
+        vim.fn["coc#config"]("ltex", { language = ltex_current_lang })
+        print("Ltex language switched to: " .. ltex_current_lang)
+    end, {})
+    keyset("n", "<leader>tl", ":ToggleLtexLang<CR>", { silent = true, desc = "Toggle Ltex Language" })
+
+
+    -- Función para mostrar documentación si existe
+    function _G.show_docs()
+	local cw = vim.fn.expand('<cword>')
+	if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
+	    vim.api.nvim_command('h ' .. cw)
+	elseif vim.api.nvim_eval('coc#rpc#ready()') then
+	    vim.fn.CocActionAsync('doHover')
+	else
+	    vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+	end
+    end
+
+    -- Autocomando: Si el cursor se detiene (CursorHold) por el tiempo definido, muestra los docs
+    vim.api.nvim_create_autocmd("CursorHold", {
+	pattern = "*",
+	callback = function()
+	    -- Solo mostrar si NO estamos en modo inserción y si hay un proveedor de Coc
+	    if vim.api.nvim_get_mode().mode == 'n' then
+		_G.show_docs()
+	    end
+	end
+    })
+
+    -- Importante: Reduce el tiempo de espera para que se sienta ágil (default es 4000ms)
+    vim.opt.updatetime = 800 -- 0.8 segundos de espera
 
     vim.g.coc_global_extensions = {
 	'coc-snippets',

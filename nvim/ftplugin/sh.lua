@@ -11,5 +11,5 @@ end, { buffer = true, desc = "Add execute permisions (chmod +x)" })
 
 vim.keymap.set("n", "<F5>", function()
   vim.cmd("w")
-  vim.cmd("!./%") 
+  vim.cmd("! %")
 end, { buffer = true, desc = "Run Script" })

@@ -20,15 +20,16 @@ return {
 	    lazy = false,
 	    priority = 1000,
 	    opts = {},
+
+	    config = function()
+		vim.cmd.colorscheme "tokyonight-night" -- "catppuccin-mocha",  ""
+	    end,
 	},
 
 	{
 	    "catppuccin/nvim",
 	    name = "catppuccin",
-	    priority = 1000,
-	    config = function()
-		vim.cmd.colorscheme "tokyonight-night" -- "catppuccin-mocha",  ""
-	    end,
+	    lazy = true,
 	},
 
 	-- Lualine
@@ -41,8 +42,8 @@ return {
 		    options = {
 			icons_enabled = true,
 			theme = 'auto',
-			component_separators = { left = '', right = '' },
-			section_separators = { left = '', right = '' },
+			component_separators = { left = '', right = '' }, -- 
+			section_separators = { left = '', right = '' }, -- ██   
 			disabled_filetypes = {
 			    statusline = {},
 			    winbar = {},
@@ -110,4 +111,14 @@ return {
     -- Icons
     { "ryanoasis/vim-devicons" },
 
+    {
+	'brenoprata10/nvim-highlight-colors',
+	event = { "BufReadPre", "BufNewFile" },
+	config = function()
+	    -- Ensure termguicolors is enabled if not already
+	    vim.opt.termguicolors = true
+
+	    require('nvim-highlight-colors').setup({})
+	end
+    }
 }

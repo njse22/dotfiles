@@ -119,6 +119,59 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
   --border="rounded" --border-label="" --preview-window="border-rounded"
   --marker="" --pointer="" --separator="─" --scrollbar="│"'
 
+####################################################################################
+function __tmux_session_select() {
+  tmux list-sessions -F '#{?session_attached,,#{session_name}}' |
+    sed '/^$/d' |
+    fzf-tmux -u 30% --reverse --header='Enter: Switch / Ctrl-K: Kill / Ctrl-R: Rename' \
+      --border-label=" Sessions " \
+      --preview='tmux capture-pane -pt {}' \
+      --bind='enter:execute(tmux switch-client -t {})+accept' \
+      --bind='ctrl-k:execute(tmux kill-session -t {})+accept' \
+      --bind='ctrl-r:execute(tmux command-prompt -I {} -p "Rename to:" "rename-session -t {} %%")+accept'
+}
+
+function __tmux_window_select() {
+  tmux list-windows -F '#{?window_attached,,#{window_name}}' |
+    sed '/^$/d' |
+    fzf-tmux -u 30% --reverse --header='Enter: Swap / ' \
+      --border-label=" Windows " \
+      --preview='tmux capture-pane -pt {}' \
+      --bind='enter:execute(tmux swap-window -t {})+accept' \
+      --bind='ctrl-k:execute(tmux kill-window -t {})+accept' \
+      --bind='ctrl-r:execute(tmux command-prompt -I {} -p "Rename to:" "rename-window -t {} %%")+accept'
+}
+
+function __tmux_panel_select() {
+  tmux list-panes |
+    awk -F':' '{print $1 }' |
+    fzf-tmux -u 30% --reverse --header='Enter: Swap / ' \
+      --border-label=" Panels " \
+      --preview='tmux capture-pane -pt {}' \
+      --bind='enter:execute()'
+}
+
+function __fzf_tmux_menu() {
+  local option_1='Sessions'
+  local option_2='Windows'
+  local option_3='Panels'
+
+  local selected=$(echo "$option_1\n$option_2\n$option_3" | fzf-tmux -u 30%)
+
+  case "$selected" in
+  "$option_1")
+    __tmux_session_select
+    ;;
+  "$option_2")
+    __tmux_window_select
+    ;;
+  "$option_3") 
+    __tmux_panel_select
+    ;;
+  esac
+}
+####################################################################################
+  
 
 function fzf-tool() {
 

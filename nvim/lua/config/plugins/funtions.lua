@@ -1,3 +1,35 @@
+-- ltex lsp 
+--
+vim.api.nvim_create_user_command("SetLanguage", function(args)
+  local lang = args.args
+  vim.fn["coc#config"]("ltex", { language = lang })
+  vim.notify("Language set to: " .. lang)
+end, { nargs = 1 })
+
+
+-- NERDTree
+-- Función para alternar el ancho de NERDTree
+function _G.toggle_nerdtree_width()
+    -- Obtenemos el ancho actual de la ventana
+    local current_width = vim.api.nvim_win_get_width(0)
+    local max_width = 50  -- Ancho grande
+    local min_width = 30  -- Ancho normal
+
+    if current_width < max_width then
+        vim.cmd("vertical resize " .. max_width)
+    else
+        vim.cmd("vertical resize " .. min_width)
+    end
+end
+
+-- Mapeo: Presiona <Leader>w con el cursor en NERDTree para cambiar tamaño
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "nerdtree",
+    callback = function()
+        vim.keymap.set("n", "<leader>w", _G.toggle_nerdtree_width, { buffer = true, silent = true })
+    end
+})
+
 -- Table of Content with FZF
 vim.keymap.set("n", "<localleader>lt", function()
 	return require("vimtex.fzf-lua").run()

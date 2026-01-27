@@ -4,56 +4,9 @@ return {
 	-- ------------------------------
 	{
 		"lervag/vimtex",
-		lazy = false,
+		ft = { "tex", "bib" },
 		init = function()
 			vim.g.vimtex_compiler_method = "latexmk"
-
-			--vim.g.vimtex_compiler_latexmk = {
-			--	options = {
-			--		"-verbose",
-			--		'-file-line-error',
-			--		'-synctex=1',
-			--		'-interaction=nonstopmode',
-			--		-- '-recorder'
-			--		--'-pdflatex="pdflatex"',
-			--		-- latexmk -pdflatex="pdflatex -synctex=1 -interaction=nonstopmode" main.tex
-			--		-- '-pdflatex="pdflatex -synctex=1 -interaction=nonstopmode"',
-			--		-- "-verbose",
-			--		-- "-file-line-error",
-			--		-- Old params
-			--		-- '-pdf',
-			--		-- '-pdflatex="pdflatex -synctex=1 -interaction=nonstopmode"',
-			--		-- '-file-line-error',
-			--		-- --------------------------
-			--		-- '-pdf',
-			--		-- '-shell-escape',
-			--		-- '-verbose',
-			--		-- '-file-line-error',
-			--		-- '-synctex=1',
-			--		-- '-interaction=nonstopmode',
-			--	},
-			--}
-
-			-- TODO:  <02-01-26, Nicolas J. Salazar E. (njse22)> --
-			-- Validate how to use this viewer -> help vimtex-view-evince
-
-			-- vim.g.vimtex_view_general_viewer = 'evince'
-			-- vim.g.vimtex_view_general_options = '-w'
-
-			-- See: https://github.com/lervag/vimtex/issues/1719
-			-- vim.cmd([[
-			--   function! ZathuraHook() dict abort
-			--     if self.xwin_id <= 0 | return | endif
-			--
-			--     silent call system('xdotool windowactivate ' . self.xwin_id . ' --sync')
-			--     silent call system('xdotool windowraise ' . self.xwin_id)
-			--   endfunction
-			-- ]])
-
-			-- vim.g.vimtex_view_zathura_hook_view = 'ZathuraHook'
-
-			-- vim.g.vimtex_view_general_viewer = 'evince'
-			-- vim.g.vimtex_view_general_options = '-w'
 
 			-- Ref: https://github.com/lervag/vimtex/issues/3043
 			vim.g.vimtex_view_method = "zathura_simple"
@@ -77,10 +30,11 @@ return {
 			"nvim-tree/nvim-web-devicons"
 		},
 		opts = {
+			file_types = { "markdown", "codecompanion" },
 			code = { sign = false, width = "block", right_pad = 1 },
 			heading = { sign = false, icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " } },
 		},
-		ft = { "markdown" },
+		ft = { "markdown", "codecompanion" },
 	},
 	{
 		"iamcco/markdown-preview.nvim",
@@ -90,11 +44,40 @@ return {
 		init = function() vim.g.mkdp_filetypes = { "markdown" } end,
 		ft = { "markdown" },
 	},
+
 	{
-		"dhruvasagar/vim-table-mode",
+		"yousefhadder/markdown-plus.nvim",
+		ft = "markdown",
+		opts = {},
+	},
+	{
+		"epwalsh/obsidian.nvim",
+		version = "*",
 		lazy = true,
-		ft = { "markdown" },
-		config = function() vim.g.table_mode_corner = "|" end,
+		ft = "markdown",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		opts = {
+			workspaces = {
+				{
+					name = "work",
+					path = "~/Documents/vaults/work",
+				},
+			},
+			picker = {
+				name = "fzf-lua",
+			},
+			mappings = {
+				["gf"] = {
+					action = function()
+						return require("obsidian").util.gf_passthrough()
+					end,
+					opts = { noremap = false, expr = true, buffer = true },
+				},
+			},
+			ui = { enable = false },
+		},
 	},
 
 	-- ------------------------------

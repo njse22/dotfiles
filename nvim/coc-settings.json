@@ -124,6 +124,11 @@
 		}
 	],
 	"git.enableGutters": true,
-	"extensions.updateCheck": "never", 
-	"suggest.triggerAfterInsertEnter": true
+	"extensions.updateCheck": "never",
+	"suggest.triggerAfterInsertEnter": true,
+	"signature.target": "float",
+	"signature.preferShownAbove": false,
+	"signature.hideOnTextChange": true,
+	"suggest.floatEnable": true,
+	"coc.preferences.hoverTarget": "float"
 }
