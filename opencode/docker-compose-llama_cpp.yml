@@ -1,0 +1,26 @@
+services:
+  llama-cpp-server:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    container_name: llama-cpp-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ~/.ai_models:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - "gpu"
+    restart: always
+    command: >
+       --models-dir /models
+       --models-preset /models/models.ini
+       --models-max 1
+       --threads 10
+       --parallel 4
+       --cont-batching
+       --cache-idle-slots
+       --fit off

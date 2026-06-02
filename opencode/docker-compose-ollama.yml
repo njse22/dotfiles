@@ -1,0 +1,22 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    environment:
+      UID: 1000
+      PID: 1000
+      OLLAMA_KEEP_ALIVE: 24h
+      OLLAMA_ORIGINS: "*"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities:
+                - "gpu"
+    # restart: always
+    ports:
+      - 11434:11434/tcp
+    volumes:
+      - ./data/ollama/ollama:/root/.ollama
