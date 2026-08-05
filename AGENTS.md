@@ -1,21 +1,19 @@
-# dotfiles — AGENTS.md
+# dotfiles - Agent Instructions
 
-## Repo structure
-```
-nvim/        → ~/.config/nvim
-  lua/config/ plugins/ general.lua     # lazy.nvim plugin specs
-  coc-settings.json                     # coc.nvim LSP config (Python, Ansible, LaTeX)
-zsh/
-  zshrc       → ~/.zshrc                # oh-my-zsh + powerlevel10k
-  aliases.zsh → ~/.aliases.zsh          # sourced from .zshrc; fzf tools, env vars, py-venv
-tmux/
-  tmux.conf   → ~/.tmux.conf            # tpm plugins, prefix=C-q, kiss-tmux theme
-fastfetch/    → ~/.config/fastfetch/
-navi/         → ~/.local/share/navi/    # community cheat sheets
-rofi/         → ~/.config/rofi/
-setup.sh                                # **OUTDATED** (declared in script header) — do not use
-README.md                               # documents symlink targets
-```
+##  Constraints & Setup
+- This is a configuration repository, not a deployable application.
+- Do not use `setup.sh`. Configurations are managed by symlinking files from this repo to `$HOME` (see `README.md` for the map).
+
+##  Conventions & Shortcuts
+- **Editor:** `nvim`. Leader key is `,`.
+- **Tmux Prefix:** `C-q` (not `C-b`).
+- **Shell:** Zsh. Aliases and environment secrets are sourced from `.zshrc` and `~/.aliases.zsh`.
+- **LSP:** `coc.nvim` is used. Key language servers: `pyright`, `ansible-language-server`, `ltex-ls`.
+
+##  High-Signal Tools
+- `py-venv` (in `aliases.zsh`): Manages Python virtual environments under `~/.venv/`.
+- `fzf-tool` (`C-F`): Menu-driven fzf helper (app launcher, file explorer, venvs).
+- `__fzf_open_file_or_dir` (`C-P`): File/directory picker with preview.
 
 ## Key conventions
 - **EDITOR** is `nvim` (set via `$EDITOR` in `aliases.zsh`)
