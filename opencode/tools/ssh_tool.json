@@ -1,0 +1,17 @@
+{
+  "name": "ssh_infrastructure_tool",
+  "description": "Permite ejecutar comandos remotos o locales vía SSH y transferir archivos usando llaves privadas en el host local.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "hostname": { "type": "string", "description": "IP o dominio del host (ej: 127.0.0.1)" },
+      "username": { "type": "string", "description": "Usuario SSH del sistema" },
+      "key_path": { "type": "string", "description": "Ruta absoluta de la llave privada (ej: /root/.ssh/id_rsa)" },
+      "action": { "type": "string", "enum": ["exec", "transfer"], "description": "Acción a realizar" },
+      "command": { "type": "string", "description": "Comando a ejecutar si la acción es 'exec'" },
+      "local_file": { "type": "string", "description": "Ruta del archivo local para transferir" },
+      "remote_file": { "type": "string", "description": "Ruta destino en el servidor remoto" }
+    },
+    "required": ["username", "key_path", "action"]
+  }
+}
