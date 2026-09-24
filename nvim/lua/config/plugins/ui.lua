@@ -16,6 +16,8 @@ return {
 	{ 'joshdick/onedark.vim', lazy = true },
 
 	{
+	    "rebelot/kanagawa.nvim", lazy = true, },
+	{
 	    "folke/tokyonight.nvim",
 	    lazy = false,
 	    priority = 1000,
@@ -43,7 +45,7 @@ return {
 			icons_enabled = true,
 			theme = 'auto',
 			component_separators = { left = '', right = '' }, -- 
-			section_separators = { left = '', right = '' }, -- ██   
+			section_separators = { left = '', right = '' }, -- ██  
 			disabled_filetypes = {
 			    statusline = {},
 			    winbar = {},

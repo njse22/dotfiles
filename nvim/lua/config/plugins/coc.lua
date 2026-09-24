@@ -58,14 +58,30 @@ M.config = function()
 
 
     -- Use K to show documentation in preview window
+    -- function _G.show_docs()
+    --     local cw = vim.fn.expand('<cword>')
+
+    --     if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
+    --     	vim.api.nvim_command('h ' .. cw)
+    --     elseif vim.api.nvim_eval('coc#rpc#ready()') then
+    --     	vim.fn.CocActionAsync('doHover')
+    --     else
+    --     	vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+    --     end
+    -- end
+    --
     function _G.show_docs()
 	local cw = vim.fn.expand('<cword>')
-	if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
-		vim.api.nvim_command('h ' .. cw)
-	elseif vim.api.nvim_eval('coc#rpc#ready()') then
-		vim.fn.CocActionAsync('doHover')
-	else
-		vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+	if cw == "" then return end
+
+	if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
+	    vim.api.nvim_command('h ' .. cw)
+	elseif vim.fn.exists('*CocAction') == 1 and vim.api.nvim_eval('coc#rpc#ready()') then
+	    local has_hover = vim.fn.CocAction('hasProvider', 'hover')
+	    -- Es vital esta validación estricta (== true or == 1)
+	    if has_hover == true or has_hover == 1 then
+		pcall(vim.fn.CocActionAsync, 'doHover')
+	    end
 	end
     end
 
@@ -234,16 +250,16 @@ M.config = function()
 
 
     -- Función para mostrar documentación si existe
-    function _G.show_docs()
-	local cw = vim.fn.expand('<cword>')
-	if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
-	    vim.api.nvim_command('h ' .. cw)
-	elseif vim.api.nvim_eval('coc#rpc#ready()') then
-	    vim.fn.CocActionAsync('doHover')
-	else
-	    vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
-	end
-    end
+    -- function _G.show_docs()
+    --     local cw = vim.fn.expand('<cword>')
+    --     if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
+    --         vim.api.nvim_command('h ' .. cw)
+    --     elseif vim.api.nvim_eval('coc#rpc#ready()') then
+    --         vim.fn.CocActionAsync('doHover')
+    --     else
+    --         vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+    --     end
+    -- end
 
     -- Autocomando: Si el cursor se detiene (CursorHold) por el tiempo definido, muestra los docs
     vim.api.nvim_create_autocmd("CursorHold", {

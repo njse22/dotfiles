@@ -32,12 +32,12 @@
     // Title
     {
       "type": "title",
-      "format": "{#31}╭────────────────────────────────────── {#}{user-name-colored} 💻 {#31} ───────────────────────────────────╮"
+      "format": "{#34}╭───────────────────────────────────── {#}{user-name-colored} 💻 {#34} ─────────────────────────────────╮"
     },
     // System Information
     {
       "type": "custom",
-      "format": "{#31}{$2}{#1} {#}System Information"
+      "format": "{#34}{$2}{#1} {#}System Information"
     },
     {
       "type": "os",
@@ -63,48 +63,48 @@
     },
     {
       "type": "custom",
-      "format": "{#31}{$2}{#1}"
+      "format": "{#34}{$2}{#1}"
     },
     // Hardware Information
     {
       "type": "custom",
-      "format": "{#31}{$2}{#31} {#}Hardware Information"
+      "format": "{#34}{$2}{#31} {#}Hardware Information"
     },
     {
       "type": "cpu",
-      "key": "{#31}{$2}{#separator} {#keys}󰻠 CPU         "
+      "key": "{#34}{$2}{#separator} {#keys}󰻠 CPU         "
     },
     {
       "type": "gpu",
-      "key": "{#31}{$2}{#separator} {#keys}󰢮 GPU         "
+      "key": "{#34}{$2}{#separator} {#keys}󰢮 GPU         "
     },
     {
       "type": "battery",
-      "key": "{#31}{$2}{#separator} {#keys}󰁹 Battery     "
+      "key": "{#34}{$2}{#separator} {#keys}󰁹 Battery     "
     },
     {
       "type": "memory",
-      "key": "{#31}{$2}{#separator} {#keys}󰍛 Memory      "
+      "key": "{#34}{$2}{#separator} {#keys}󰍛 Memory      "
     },
     {
       "type": "disk",
-      "key": "{#31}{$2}{#separator} {#keys}󰋊 Disk (/)    ",
+      "key": "{#34}{$2}{#separator} {#keys}󰋊 Disk (/)    ",
       "folders": "/:"
     },
     {
       "type": "disk",
-      "key": "{#31}{$2}{#separator} {#keys}󰋊 Disk (/home)",
+      "key": "{#34}{$2}{#separator} {#keys}󰋊 Disk (/home)",
       "folders": "/home:"
     },
     {
       "type": "custom",
-      "format": "{#31}{$2} \t \t "
+      "format": "{#34}{$2} \t \t "
     },
 
     // Network 
     {
       "type": "custom",
-      "format": "{#31}{$2} {#}Network Information"
+      "format": "{#34}{$2} {#}Network Information"
     },
 
     {
@@ -128,10 +128,10 @@
 	"key": "{$2}{#separator} {#keys}󰀂 Public IP   ",
 	"timeout": 1000
     },
-    {
-        "type": "wifi",
-	"key": "{$2}{#separator} {#keys}󰖩 WiFi SSID   "
-    },
+    // {
+    //     "type": "wifi",
+    //     "key": "{$2}{#separator} {#keys}󰖩 WiFi SSID   "
+    // },
 
     // Colors
     {
@@ -147,7 +147,7 @@
     // Footer
     {
       "type": "custom",
-      "format": "{#31}╰{$1}╯" // ╯
+      "format": "{#34}╰{$1}╯" // ╯
     }
   ]
 }

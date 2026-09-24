@@ -51,7 +51,7 @@
 	"ltex.checkFrequency": "save",
 	"ltex.additionalRules.motherTongue": "es",
 	"ltex.additionalRules.enablePickyRules": true,
-	"ltex.java.path": "/usr/lib/jvm/java-17-openjdk-amd64",
+	"ltex.java.path": "/usr/lib/jvm/java-21-openjdk-amd64",
 	"ltex.java.args": [
 		"-Xmx1G",
 		"--add-opens",
@@ -115,7 +115,7 @@
 	"ansible.ansible.rolesPath": "./roles",
 	"ansible.ansible.collectionsPaths": "./collections",
 	"ansible.ansibleLint.arguments": "--profile=production",
-	"java.import.gradle.java.home": "/usr/lib/jvm/java-17-openjdk-amd64",
+	"java.import.gradle.java.home": "/usr/lib/jvm/java-21-openjdk-amd64",
 	"snippets.ultisnips.pythonPrompt": false,
 	"java.imports.gradle.wrapper.checksums": [
 		{
@@ -130,5 +130,9 @@
 	"signature.preferShownAbove": false,
 	"signature.hideOnTextChange": true,
 	"suggest.floatEnable": true,
-	"coc.preferences.hoverTarget": "float"
+  "coc.preferences.hoverTarget": "float",
+  "json.schemaDownload.trustedDomains": {
+    "https://github.com": true,
+    "https://www.schemastore.org": true
+  }
 }
