@@ -1,18 +1,24 @@
-import { type Plugin, tool } from "@opencode-ai/plugin"
+import { Plugin } from "@opencode/plugin"
 
-export const CustomToolsPlugin: Plugin = async (ctx) => {
-  return {
-    tool: {
-      mytool: tool({
+export default Plugin.define({
+  id: "custom-tools",
+  async setup(ctx) {
+    await ctx.tool.transform((editor) => {
+      editor.add({
+        name: "mytool",
         description: "This is a custom tool",
-        args: {
-          foo: tool.schema.string(),
+        input: {
+          type: "object",
+          properties: { foo: { type: "string" } },
+          required: ["foo"],
+          additionalProperties: false,
         },
-        async execute(args, context) {
-          const { directory, worktree } = context
-          return `Hello ${args.foo} from ${directory} (worktree: ${worktree})`
+        async execute(input) {
+          return {
+            content: `Hello ${(input as { foo: string }).foo} from ${ctx.location.directory}`,
+          }
         },
-      }),
-    },
-  }
-}
+      })
+    })
+  },
+})
