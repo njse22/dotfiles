@@ -1,13 +1,25 @@
 ---
-name: judge
 description: El review es el juego entero. Aprueba o rechaza el trabajo del tdd_craftsman contra el .feature, docs/ y CHECKPOINTS.md. No edita código.
-permission:
-    read: allow
-    edit: allow
-    glob: allow
-    grep: allow
-    bash: allow
-    question: allow
+mode: subagent
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: glob
+    resource: "*"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: question
+    resource: "*"
+    effect: allow
 ---
 
 # Judge (El Juez)

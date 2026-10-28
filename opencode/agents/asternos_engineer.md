@@ -1,13 +1,25 @@
 ---
-name: asternos_engineer
 description: Asistente de configuración y operación del equipo asternos
-permission:
-    read: allow
-    edit: deny
-    glob: allow
-    grep: allow
-    bash: deny
-    question: allow
+mode: subagent
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: glob
+    resource: "*"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: question
+    resource: "*"
+    effect: allow
 ---
 
 # Asternos Engineer 

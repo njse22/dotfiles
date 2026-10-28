@@ -133,6 +133,8 @@
   "coc.preferences.hoverTarget": "float",
   "json.schemaDownload.trustedDomains": {
     "https://github.com": true,
-    "https://www.schemastore.org": true
+    "https://www.schemastore.org": true,
+    "https://opencode.ai": true,
+    "https://models.dev": true
   }
 }

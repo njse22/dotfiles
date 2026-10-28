@@ -1,13 +1,25 @@
 ---
-name: tdd_craftsman
 description: Implementa UNA feature por TDD estricto (un test a la vez, Rojo → Verde → Refactor) guiado por su .feature aprobado. Escribe código y tests.
-permission:
-    read: allow
-    edit: allow
-    glob: allow
-    grep: allow
-    bash: allow
-    question: allow
+mode: subagent
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: glob
+    resource: "*"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: question
+    resource: "*"
+    effect: allow
 ---
 
 # TDD Craftsman

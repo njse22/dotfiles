@@ -1,13 +1,25 @@
 ---
-name: craftsman_lead
 description: Orquestador al estilo Uncle Bob. Coordina las 5 fases (conversación → gherkin → TDD → review → mutación). NUNCA escribe código ni tests.
-permission:
-    read: allow
-    edit: allow
-    glob: allow
-    grep: allow
-    bash: allow
-    question: allow
+mode: primary
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: glob
+    resource: "*"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: question
+    resource: "*"
+    effect: allow
 ---
 
 # Craftsman Lead (Orquestador)

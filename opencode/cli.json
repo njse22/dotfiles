@@ -6,5 +6,9 @@
   },
   "session": {
     "markdown": "rendered"
+  },
+  "mouse": true,
+  "attention": {
+    "notifications": true
   }
 }

@@ -175,3 +175,7 @@ export SDKMAN_DIR="$HOME/.sdkman"
 
 # opencode
 export PATH=/home/njse22/.opencode/bin:$PATH
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/njse22/.local/bin:$PATH"

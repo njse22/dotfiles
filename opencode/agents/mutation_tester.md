@@ -1,13 +1,25 @@
 ---
-name: mutation_tester
 description: Valida que los tests muerden. Corre tools/mutate.py sobre el código de la feature y exige una puntuación de mutación por encima del umbral. No edita código.
-permission:
-    read: allow
-    edit: allow
-    glob: allow
-    grep: allow
-    bash: allow
-    question: allow
+mode: subagent
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: glob
+    resource: "*"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: question
+    resource: "*"
+    effect: allow
 ---
 
 # Mutation Tester

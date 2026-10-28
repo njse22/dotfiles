@@ -1,13 +1,25 @@
 ---
-name: gherkin_author
 description: Destila project-spec.md en archivos .feature (Gherkin). El contrato ejecutable que el humano aprueba antes del TDD. No escribe código ni tests.
-permission:
-    read: allow
-    edit: allow
-    glob: allow
-    grep: allow
-    bash: allow
-    question: allow
+mode: subagent
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: glob
+    resource: "*"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: question
+    resource: "*"
+    effect: allow
 ---
 
 # Gherkin Author
